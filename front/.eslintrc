@@ -1,0 +1,25 @@
+// 에디터별로 eslint를 활성해야 할수도 있다.
+{
+  "parserOptions": {
+    "ecmaVersion": 2018, // 에크마(ecma) script 2018년 기준
+    "sourceType": "module", // node와 react는 import / export / require로 사용한다.
+    "ecmaFeatures": {
+      "jsx": true // jsx 문법 허용
+    }
+  },
+  "env": {
+    "browser": true, // 브라우저 환경
+    "node": true // 노드 환경
+  },
+
+  "extends": [
+    "eslint:recomended",
+    "plugin:react/recomended"
+  ],
+
+  "plugins": [
+    "import", // import /export 문법 지원 설치
+    "react-hooks" // hooks 플러그인 설치
+  ]
+
+}
