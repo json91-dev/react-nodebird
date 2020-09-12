@@ -1,21 +1,20 @@
 // 메인화면
-import Link from 'next/link';
-import AppLayout from "../components/AppLayout";
+import React from 'react';
+import AppLayout from '../components/AppLayout'
 import Head from 'next/head';
 
-
-const Home = () => {
+const Profile = () => {
   return (
     <>
       <Head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.6.3/antd.min.css"/>
       </Head>
       <AppLayout>
-        <div>Hello, next</div>
+        <div>내 프로필</div>
       </AppLayout>
     </>
   )
-};
+}
 
-export default Home
+export default Profile
 
