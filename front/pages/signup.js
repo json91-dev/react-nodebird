@@ -14,7 +14,18 @@ const TextInput = ({ value }) => {
 
 TextInput.propTypes = {
   value: PropTypes.string,
-}
+};
+
+// 커스텀 훅
+// Form의 event에 대한 input 콜백의 값을 useState에 값으로 지정하는 부분을 최소화할 수 있음
+export const useInput = (initValue = null) => {
+  const [value, setter] = useState(initValue);
+  const handler = (e) => {
+    setter(e.target.value);
+  };
+
+  return [value, handler];
+};
 
 const Signup = () => {
   const [ id, setId ] = useState('');
@@ -34,7 +45,7 @@ const Signup = () => {
    */
 
   const onSubmit = useCallback((e) => {
-    // e.preventDefault();
+    e.preventDefault();
 
     if (password !== passwordCheck) {
       return setPasswordError(true);
@@ -70,7 +81,7 @@ const Signup = () => {
 
   return (
     <>
-      <Form onFinish={onSubmit} style={{ padding: 10 }}>
+      <Form onSubmit={onSubmit} style={{ padding: 10 }}>
         <TextInput value="135"/>
         <div>
           <label htmlFor="user-id">아이디</label>
@@ -105,7 +116,7 @@ const Signup = () => {
       </Form>
     </>
   )
-}
+};
 
 export default Signup
 

@@ -20,7 +20,6 @@ const NodeBird = ({Component}) => {
 
 NodeBird.propTypes = {
   Component: PropTypes.elementType, // JSX로 들어갈수 있는 모든 것들 (문자, JSX, 숫자, 객체 등)
-
-}
+};
 
 export default NodeBird;
