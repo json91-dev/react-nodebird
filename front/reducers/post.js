@@ -1,16 +1,23 @@
-const initialState = {
+export const initialState = {
   mainPosts: [],
 };
 
-const ADD_POST = 'ADD_POST';
-const ADD_DUMMY = 'ADD_DUMMY';
+export const ADD_POST = 'ADD_POST';
+export const ADD_DUMMY = 'ADD_DUMMY';
 
 const addPost = {
   type: ADD_POST,
 };
 
 const addDummy = {
-
+  type: ADD_DUMMY,
+  data: {
+    content: 'Hello',
+    UserId: 1,
+    User: {
+      nickname: '제로초',
+    },
+  },
 };
 
 const reducer = (state = initialState, action) => {
@@ -20,7 +27,7 @@ const reducer = (state = initialState, action) => {
         ...state,
       };
     }
-    
+
     case ADD_DUMMY: {
       return {
         ...state,
@@ -29,3 +36,5 @@ const reducer = (state = initialState, action) => {
     }
   }
 };
+
+export default reducer;

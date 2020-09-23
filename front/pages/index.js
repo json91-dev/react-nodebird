@@ -15,7 +15,7 @@ const dummy = {
     content: '첫 번째 게시글',
     img : 'https://cdn.crowdpic.net/list-thumb/thumb_l_C033BE71DECD4E2B703A91F4FD6D59CD.jpg',
   }],
-};
+}; 
 
 const Home = () => {
   return (
