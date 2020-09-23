@@ -1,39 +1,31 @@
 const initialState = {
-  isLoggedIn: false,
-  user: null,
+  mainPosts: [],
 };
 
-const LOG_IN = 'LOG_OUT'; // 액션의 이
-const LOG_OUT = 'LOG_OUT';
+const ADD_POST = 'ADD_POST';
+const ADD_DUMMY = 'ADD_DUMMY';
 
-
-const loginAction = {
-  type: LOG_IN,
-  data: {
-    nickname: '제로초'
-  }
+const addPost = {
+  type: ADD_POST,
 };
 
-const logoutAction = {
-  type: LOG_OUT,
+const addDummy = {
+
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
-    case LOG_IN: {
+  switch (action.type) {
+    case ADD_POST: {
       return {
         ...state,
-        isLoggedIn: true,
-        user: action.data,
-      }
+      };
     }
     
-    case LOG_OUT: {
+    case ADD_DUMMY: {
       return {
         ...state,
-        isLoggedIn: false,
-        user: null,
-      }
+        mainPosts: [action.data, ...state.mainPosts],
+      };
     }
   }
 };
