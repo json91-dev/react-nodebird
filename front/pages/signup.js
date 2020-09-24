@@ -4,12 +4,13 @@ import AppLayout from '../components/AppLayout'
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import { Form, Input, Checkbox, Button } from 'antd';
+import {useDispatch} from "react-redux";
+import {signUpAction} from "../reducers/user";
 
 const TextInput = ({ value }) => {
   return (
     <div>{value}</div>
   )
-
 };
 
 TextInput.propTypes = {
@@ -36,7 +37,7 @@ const Signup = () => {
 
   const [ passwordError, setPasswordError ] = useState(false);
   const [ termError, setTermError ] = useState(false);
-
+  const dispatch = useDispatch();
 
   /**
    * props로 넘겨주는 함수들은 useCallback으로 감싸줘야함.
@@ -53,15 +54,20 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
-
+    dispatch(signUpAction({
+      id,
+      password,
+      nick,
+    }));
     console.log({ id, nick, password, passwordCheck, term });
-  }, [ password, passwordCheck, term ]);
+  }, [ password, passwordCheck, term, nick ]);
 
   const onChangeId = useCallback((e) => {
     setId(e.target.value);
   }, []);
 
   const onChangeNick = useCallback((e) => {
+    console.log(e.target.value);
     setNick(e.target.value);
   }, []);
 
