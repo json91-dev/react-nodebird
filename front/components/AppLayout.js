@@ -3,16 +3,10 @@ import Link from 'next/link'
 import { Menu, Input, Button, Row, Col, Card, Avatar, Form } from 'antd';
 import LoginForm from "./LoginForm";
 import UserProfile from './UserProfile';
-
-const dummy = {
-  nickname: '제로초',
-  Post: [],
-  Followings: [],
-  Followers: [],
-  isLoggedIn: true,
-};
+import {useSelector} from "react-redux";
 
 const AppLayout = ({children}) => {
+  const { isLoggedIn } = useSelector(state => state.user);
   return (
     <div>
       <Menu mode="horizontal">
@@ -26,7 +20,7 @@ const AppLayout = ({children}) => {
       {/*좌우 사이 간격을 조정*/}
       <Row gutter={10}>
         <Col xs={6} md={6}>
-          {dummy.isLoggedIn ?
+          {isLoggedIn ?
             <UserProfile/>
             :
             <LoginForm />
