@@ -1,5 +1,7 @@
-import { all, fork, put, call takeLatest } from 'redux-saga/effects';
+import { all, fork, put, call, takeEvery, takeLatest, take } from 'redux-saga/effects';
 import { LOG_IN, LOG_IN_SUCCESS, LOG_IN_FAILURE } from "../reducers/user";
+
+const HELLO_SAGA = "HELLO_SAGA";
 
 function loginAPI() {
   // 서버의 요청을
@@ -16,16 +18,24 @@ function* login() {
     yield put({
       type: LOG_IN_FAILURE
     })
-
   }
 }
 
+function* watchSignUp() {
+
+}
+
 function* watchLogin() {
- yield takeLatest(LOG_IN, login)
+ // yield takeLatest(LOG_IN, login)
+  yield take(LOG_IN);
+  yield put({
+    type: LOG_IN_SUCCESS,
+  })
 }
 
 export default function* userSaga() {
   yield all([
-    fork(watchLogin)
+    watchLogin(),
+    watchSignUp()
   ]);
 }
