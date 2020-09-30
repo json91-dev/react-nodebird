@@ -7,5 +7,5 @@ export default function* rootSaga() {
   yield all([
     call(user),
     call(post),
-  ])
+  ]);
 }

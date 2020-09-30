@@ -1,36 +1,35 @@
 import React from 'react';
-import Head from "next/dist/next-server/lib/head";
+import Head from 'next/dist/next-server/lib/head';
 import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
-import { createStore, compose, applyMiddleware } from "redux";
+import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 
-import AppLayout from "../components/AppLayout";
-import reducer  from '../reducers';
+import AppLayout from '../components/AppLayout';
+import reducer from '../reducers';
 import rootSaga from '../sagas';
-
 
 // import {initialState} from "../reducers/post";
 
 // Component는 next에서 넣어주는 props이다.
 // 현재 소스코드에서 index, profile, signup등의 컴포넌트들에 대한 정보를 가지고 있다.
-const NodeBird = ({Component, store}) => {
-  return (
-    <Provider store={store}>
-      <Head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.6.3/antd.min.css"/>
-      </Head>
-      <AppLayout>
-        <Component/>
-      </AppLayout>
-    </Provider>
-  )
-};
+const NodeBird = ({ Component, store }) => (
+  <Provider store={store}>
+    <Head>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.6.3/antd.min.css" />
+    </Head>
+    <AppLayout>
+      <Component />
+    </AppLayout>
+  </Provider>
+);
 
 NodeBird.propTypes = {
-  Component: PropTypes.elementType, // JSX로 들어갈수 있는 모든 것들 (문자, JSX, 숫자, 객체 등)
-  store : PropTypes.object,
+  // JSX로 들어갈수 있는 모든 것들 (문자, JSX, 숫자, 객체 등)
+  // required : 항상 props가 존재하여야함.
+  Component: PropTypes.elementType.isRequired,
+  store: PropTypes.object.isRequired,
 };
 
 // nodeBird 컴포넌트에 props로 store를 넣어주는 역활을 함.
@@ -53,14 +52,10 @@ const configureStore = (initialState, options) => {
    * 추가적으로 production일때는 redux의 state가 노출되면 안되므로, production일때 redux devtools에 대한 접근을 막아준다.
    */
 
-  const enhancer = process.env.NODE_ENV === 'production' ?
-    compose(applyMiddleware(...middlewares))
-    :
-    compose(applyMiddleware(...middlewares),
-      !options.isServer && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ !== 'undefined' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__() : (f) => f,
-    )
-  ;
-
+  const enhancer = process.env.NODE_ENV === 'production'
+    ? compose(applyMiddleware(...middlewares))
+    : compose(applyMiddleware(...middlewares),
+      !options.isServer && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ !== 'undefined' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__() : (f) => f);
   const store = createStore(reducer, initialState, enhancer); // 루트 reducer를 넣어준다.
   sagaMiddleware.run(rootSaga);
 

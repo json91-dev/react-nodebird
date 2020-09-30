@@ -1,5 +1,6 @@
 // 에디터별로 eslint를 활성해야 할수도 있다.
 {
+  "parser": "babel-eslint", // 바벨 최신 문법을 지원
   "parserOptions": {
     "ecmaVersion": 2018, // 에크마(ecma) script 2018년 기준
     "sourceType": "module", // node와 react는 import / export / require로 사용한다.
@@ -9,17 +10,23 @@
   },
   "env": {
     "browser": true, // 브라우저 환경
-    "node": true // 노드 환경
+    "node": true, // 노드 환경
+    "es6": true
   },
 
   "extends": [
-    "eslint:recomended",
-    "plugin:react/recomended"
+    "airbnb" // airbnb에 대한 eslint 적용
   ],
 
   "plugins": [
     "import", // import /export 문법 지원 설치
     "react-hooks" // hooks 플러그인 설치
-  ]
+  ],
 
+  "rules": {
+    "no-underscore-dangle": "off",
+    "react/forbid-prop-types": "off",
+    "no-trailing-spaces": "off",
+    "react/jsx-filename-extension": "off"
+  }
 }

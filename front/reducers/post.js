@@ -5,7 +5,7 @@ export const initialState = {
       nickname: '제로초',
     },
     content: '첫 번째 게시글',
-    img : 'https://cdn.crowdpic.net/list-thumb/thumb_l_C033BE71DECD4E2B703A91F4FD6D59CD.jpg',
+    img: 'https://cdn.crowdpic.net/list-thumb/thumb_l_C033BE71DECD4E2B703A91F4FD6D59CD.jpg',
   }],
   imagePaths: [], // 미리보기 이미지 경로들
 };
@@ -42,11 +42,11 @@ const reducer = (state = initialState, action) => {
         mainPosts: [action.data, ...state.mainPosts],
       };
     }
-  
+
     default: {
       return {
         ...state,
-      }
+      };
     }
   }
 };

@@ -27,8 +27,8 @@ export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 export const signUpAction = (data) => {
   return {
     type: SIGN_UP_RESUEST,
-    data: data,
-  }
+    data,
+  };
 };
 
 export const loginAction = {
@@ -40,13 +40,13 @@ export const logoutAction = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case LOG_IN_REQUEST: {
       return {
         ...state,
         loginData: action.data,
         isLoading: true,
-      }
+      };
     }
 
     case LOG_IN_SUCCESS: {
@@ -55,33 +55,28 @@ const reducer = (state = initialState, action) => {
         isLoggedIn: true,
         user: dummyUser,
         isLoading: false,
-      }
+      };
     }
-
 
     case LOG_OUT_REQUEST: {
       return {
         ...state,
         isLoggedIn: false,
         user: null,
-      }
+      };
     }
 
     case SIGN_UP_RESUEST: {
       return {
         ...state,
         signUpData: action.data,
-      }
+      };
     }
-
-
-
-
 
     default: {
       return {
         ...state,
-      }
+      };
     }
   }
 };
