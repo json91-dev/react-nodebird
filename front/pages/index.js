@@ -3,7 +3,7 @@ import { Form, Input, Button, Card, Avatar, Icon } from 'antd';
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 import { useDispatch, useSelector } from "react-redux";
-import { LOG_IN, loginAction } from "../reducers/user";
+import { LOG_IN_REQUEST, loginAction } from "../reducers/user";
 
 const Home = () => {0
   const dispatch = useDispatch();
