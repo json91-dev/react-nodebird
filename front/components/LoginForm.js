@@ -12,7 +12,7 @@ const LoginForm = () => {
 
   // 자식 컴포넌트로 넘기는 함수들을 무조건 useCallback으로 감싸준다.
   const onSubmitForm = useCallback((e) => {
-    e.preventDefault()
+    e.preventDefault();
     dispatch(loginAction);
   }, [id, password]);
 
