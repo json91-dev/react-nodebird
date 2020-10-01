@@ -1,13 +1,11 @@
 // 메인화면
 import React, { useState, useCallback } from 'react';
-import Head from 'next/head';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Checkbox, Button,
 } from 'antd';
 import { useDispatch } from 'react-redux';
-import AppLayout from '../components/AppLayout';
-import { signUpAction } from '../reducers/user';
+import { SIGN_UP_RESUEST } from "../reducers/user";
 
 const TextInput = ({ value }) => (
   <div>{value}</div>
@@ -54,11 +52,14 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
-    dispatch(signUpAction({
-      id,
-      password,
-      nick,
-    }));
+    dispatch({
+      type: SIGN_UP_RESUEST,
+      data: {
+        id,
+        password,
+        nick,
+      },
+    });
 
     console.log({
       id, nick, password, passwordCheck, term,

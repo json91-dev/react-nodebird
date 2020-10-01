@@ -27,6 +27,9 @@
     "no-underscore-dangle": "off",
     "react/forbid-prop-types": "off",
     "no-trailing-spaces": "off",
-    "react/jsx-filename-extension": "off"
+    "react/jsx-filename-extension": "off",
+    "arrow-parens": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/anchor-is-valid": "off",
   }
 }
