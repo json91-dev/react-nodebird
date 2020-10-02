@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Form, Input, Checkbox, Button,
 } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SIGN_UP_RESUEST } from "../reducers/user";
 
 const TextInput = ({ value }) => (
@@ -36,6 +36,7 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [termError, setTermError] = useState(false);
   const dispatch = useDispatch();
+  const { isSigningUp } = useSelector(state => state.user);
 
   /**
    * props로 넘겨주는 함수들은 useCallback으로 감싸줘야함.
@@ -123,7 +124,7 @@ const Signup = () => {
         </div>
         <div style={{ marginTop: 10 }}>
           {/* 파란색버튼 */}
-          <Button type="primary" htmlType="submit">가입하기</Button>
+          <Button type="primary" htmlType="submit" loading={isSigningUp}>가입하기</Button>
         </div>
       </Form>
     </>

@@ -42,6 +42,7 @@ function* signUp() {
     yield put({
       type: SIGN_UP_SUCCESS,
     });
+
   } catch (e) {
     console.error(e);
     yield put({
