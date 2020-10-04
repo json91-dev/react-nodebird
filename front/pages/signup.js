@@ -1,11 +1,12 @@
 // 메인화면
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Checkbox, Button,
 } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { SIGN_UP_RESUEST } from "../reducers/user";
+import Router from 'next/router';
+import { SIGN_UP_RESUEST } from '../reducers/user';
 
 const TextInput = ({ value }) => (
   <div>{value}</div>
@@ -36,14 +37,21 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [termError, setTermError] = useState(false);
   const dispatch = useDispatch();
-  const { isSigningUp } = useSelector(state => state.user);
+  const { isSigningUp, me } = useSelector(state => state.user);
+
+  // 객체는 useEffect에 넣지 않는것이 좋다.
+  // id가 생겼을때 signup page에서 메인페이지로 이동
+  useEffect(() => {
+    if (me) {
+      Router.push('/');
+    }
+  }, [me && me.id]);
 
   /**
    * props로 넘겨주는 함수들은 useCallback으로 감싸줘야함.
    * 함수 컴포넌트들이 state가 바뀔때마다 리렌더링되는데, 이때 함수들이 새로 생성되며, 함수를 전달받은 자식컴포넌트들은 렌더링들 다시 실행하게 된다.
    * (의도치 않은 리렌더링 발생)
    */
-
   const onSubmit = useCallback((e) => {
     e.preventDefault();
 
