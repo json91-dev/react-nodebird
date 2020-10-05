@@ -1,41 +1,91 @@
-import { Avatar, Button, Icon, Card } from "antd";
-import React from "react";
-import PropTypes from 'prop-types';
+import React, { useCallback, useState, useEffect } from 'react';
+import {
+  Avatar, Button, Icon, Card, List, Form, Input, Comment,
+} from 'antd';
 
-// 타밍라인과 같은 역활을 함
-const dummy = {
-  isLoggedIn: true,
-  imagePaths: [],
-  mainPosts: [{
-    User: {
-      id: 1,
-      nickname: '제로초',
-    },
-    content: '첫 번째 게시글',
-    img : 'https://cdn.crowdpic.net/list-thumb/thumb_l_C033BE71DECD4E2B703A91F4FD6D59CD.jpg',
-  }],
-};
+import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { ADD_COMMENT_REQUEST } from '../reducers/post';
 
 const PostCard = ({ post }) => {
+  const [commentFormOpened, setCommentFormOpened] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const { me } = useSelector(state => state.user);
+  const { commentAdded, isLoadingComment } = useSelector(state => state.post);
+  const dispatch = useDispatch();
+
+  const onToggleComment = useCallback(() => {
+    setCommentFormOpened(prev => !prev);
+  }, []);
+
+  const onSubmitComment = useCallback((e) => {
+    e.preventDefault();
+
+    if (!me) {
+      return alert('로그인이 필요합니다.');
+    }
+
+    return dispatch({
+      type: ADD_COMMENT_REQUEST,
+      data: {
+        postId: post.id,
+      },
+    });
+  }, [me && me.id]);
+
+  useEffect(() => {
+    setCommentText('');
+  }, [commentAdded === true]);
+
+  const onChangeCommentText = useCallback((e) => {
+    setCommentText(e.target.value);
+  }, []);
+
   return (
-    <Card
-      key={+post.createdAt}
-      cover={post.img && <img alt="example" src={post.img}/> }
-      actions={[
-        <Icon type="retweet" key="retweet" />,
-        <Icon type="heart" key="heart" />,
-        <Icon type="message" key="message" />,
-        <Icon type="ellipsis" key="ellipsis" />,
-      ]}
-      extra={<Button>팔로우</Button>}
-    >
-      <Card.Meta
-        avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-        title={post.User.nickname}
-        description={post.content}
-      />
-    </Card>
-  )
+    <div>
+      <Card
+        key={post.createdAt}
+        cover={post.img && <img alt="example" src={post.img} />}
+        actions={[
+          <Icon type="retweet" key="retweet" />,
+          <Icon type="heart" key="heart" />,
+          <Icon type="message" key="message" onClick={onToggleComment} />,
+          <Icon type="ellipsis" key="ellipsis" />,
+        ]}
+        extra={<Button>팔로우</Button>}
+      >
+        <Card.Meta
+          avatar={<Avatar>{post.User.nickname}</Avatar>}
+          title={post.User.nickname}
+          description={post.content}
+        />
+      </Card>
+      {commentFormOpened && (
+        <>
+          <Form onSubmit={onSubmitComment}>
+            <Form.Item>
+              <Input.TextArea row={4} value={commentText} onChange={onChangeCommentText} />
+            </Form.Item>
+            <Button type="primary" htmlType="submit" loading={isLoadingComment}>삐약</Button>
+          </Form>
+          <List
+            header={`${post.Comments ? post.Comments.length : 0} 댓글`}
+            itemLayout="horizontal"
+            dataSource={post.Comments || []}
+            renderItem={item => (
+              <li key={item.id}>
+                <Comment
+                  author={item.User.nickname}
+                  avatar={<Avatar>{item.User.nickname}</Avatar>}
+                  content={item.content}
+                />
+              </li>
+            )}
+          />
+        </>
+      )}
+    </div>
+  );
 };
 
 PostCard.propTypes = {
@@ -45,7 +95,7 @@ PostCard.propTypes = {
     content: PropTypes.string,
     img: PropTypes.string,
     createdAt: PropTypes.object,
-  })
+  }),
 };
 
 export default PostCard;
