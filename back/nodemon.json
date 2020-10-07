@@ -1,0 +1,12 @@
+{
+  "watch": [
+    "index.js",
+    "routes.js",
+    "config.js",
+    "passport",
+    "models",
+    "nodemon.json"
+  ],
+  "exec": "node index.js",
+  "ext": "js json"
+}
