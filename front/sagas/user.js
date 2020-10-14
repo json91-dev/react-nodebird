@@ -1,6 +1,9 @@
+import axios from 'axios';
+
 import {
   all, fork, put, call, takeEvery, delay,
 } from 'redux-saga/effects';
+
 import {
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
@@ -32,17 +35,16 @@ function* watchLogin() {
   yield takeEvery(LOG_IN_REQUEST, login);
 }
 
-function signUpAPI() {
-  return null;
+function signUpAPI(signUpData) {
+  return axios.post('http://localhost:3065/api/user/', signUpData);
 }
 
-function* signUp() {
+function* signUp(action) {
   try {
-    // yield call(signUpAPI);
+    yield call(signUpAPI, action.data);
     yield put({
       type: SIGN_UP_SUCCESS,
     });
-
   } catch (e) {
     console.error(e);
     yield put({

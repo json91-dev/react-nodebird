@@ -64,9 +64,9 @@ const Signup = () => {
     dispatch({
       type: SIGN_UP_RESUEST,
       data: {
-        id,
+        userId: id,
         password,
-        nick,
+        nickname: nick,
       },
     });
 
@@ -75,7 +75,7 @@ const Signup = () => {
     });
 
     return null;
-  }, [password, passwordCheck, term, nick]);
+  }, [id, nick, password, passwordCheck, term]);
 
   const onChangeId = useCallback((e) => {
     setId(e.target.value);

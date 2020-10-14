@@ -6,13 +6,10 @@ const router = express.Router();
 
 // API는 다른 서비스가 내 서비스의 기능을 실행 할 수 있게 열어둔 창구
 // router.post('/api/user', (req, res) => { => /api/user 부분을 /로 대체
-router.post('/', (req, res) => { // /api/user/
-
-});
 
 router.post('/', async (req, res, next) => { // POST /api/user => 회원가
   try {
-    const exUser = await db.user.findOne({
+    const exUser = await db.User.findOne({
       where: {
         userId: req.body.userId,
       },
@@ -73,4 +70,4 @@ router.get('/:id/posts', (req, res) => {
 
 });
 
-module.exports = Router;
+module.exports = router;
