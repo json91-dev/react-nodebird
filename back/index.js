@@ -4,6 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 const dotenv = require('dotenv');
+const passport = require('passport');
 
 dotenv.config();
 const db = require('./models');
@@ -24,12 +25,15 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(expressSession({
   resave: false,
   saveUninitialized: false,
-  secret: process.env.COOKIE_SECRET,
+  secret: process.env.COOKIE_SECRET, // 세션 암호화를 위한 시크릿
   cookie: {
     httpOnly: true,
     secure: false,
   },
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/api/user', userAPIRouter);
 app.use('/api/post', postAPIRouter);
