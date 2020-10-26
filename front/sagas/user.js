@@ -15,10 +15,15 @@ import {
 
 } from '../reducers/user';
 
-function* login() {
+function loginAPI(loginData) {
+  // 서버에 요청을 보내는 부분
+  // data.userId, data.password를 passport 로그인으로 넘겨준다.
+  return axios.post('/login', data)
+}
+
+function* login(action) {
   try {
-    // yield call(loginAPI);
-    yield delay(2000);
+    yield call(loginAPI, action.data);
     yield put({ // put은 dispatch와 동일하다.
       type: LOG_IN_SUCCESS,
     });
