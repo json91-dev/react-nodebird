@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const passport = require("passport");
 const db = require('../models');
 
 const router = express.Router();
@@ -46,8 +47,32 @@ router.post('/logout', (req, res) => { // /api/user/logout
 
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res) => { // /api/user/login
+  // err: 서버에러
+  // user : 사용자 정보
+  // info : 로직상의 에러
+  passport.authenticate('local', (err, user, info) => { // err, user, info => local.js의 done의 첫번째~ 세번쨰 인자
+    if (err) {
+      console.log(err);
+      return next(err);
+    }
 
+    if (info) {
+      return res.status(401).send(info.reason);
+    }
+
+    return req.login(user, (loginErr) => {
+      if (loginErr) {
+        return next(loginErr);
+      }
+
+      // 사용자 정보를 json으로 보내준다.
+      const filteredUser = Object.assign({}, user);
+      delete filteredUser.password;
+      return res.json(filteredUser);
+    });
+
+  })(req, res, next);
 });
 
 router.get('/:id/follow', (req, res) => { // /api/user/:id/follow

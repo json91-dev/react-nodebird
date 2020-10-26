@@ -6,14 +6,16 @@ const expressSession = require('express-session');
 const dotenv = require('dotenv');
 const passport = require('passport');
 
-dotenv.config();
+const passportConfig = require('./passport');
 const db = require('./models');
 const userAPIRouter = require('./routes/user');
 const postAPIRouter = require('./routes/post');
 const postsAPIRouter = require('./routes/posts');
 
+dotenv.config();
 const app = express();
 db.sequelize.sync(); // 테이블을 알아서 생성해 줌
+passportConfig(); // 패스포트 전략을 중앙통제실로 연결
 
 // 요청이 들어왔을때 요청을 찍어주는 기능을 할 수 있게된다.
 app.use(morgan('dev'));
