@@ -44,10 +44,12 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/logout', (req, res) => { // /api/user/logout
-
+  req.logout()
+  req.session.destroy();
+  res.send('로그아웃 성공');
 });
 
-router.post('/login', (req, res) => { // /api/user/login
+router.post('/login', (req, res, next) => { // /api/user/login
   // err: 서버에러
   // user : 사용자 정보
   // info : 로직상의 에러
@@ -61,13 +63,14 @@ router.post('/login', (req, res) => { // /api/user/login
       return res.status(401).send(info.reason);
     }
 
-    return req.login(user, (loginErr) => {
+    // 세션에 유저의 id만 저장.
+    return req.login(user, (loginErr) => { // req.user 를 세션에 저장한다.
       if (loginErr) {
         return next(loginErr);
       }
 
       // 사용자 정보를 json으로 보내준다.
-      const filteredUser = Object.assign({}, user);
+      const filteredUser = Object.assign({}, user.toJSON());
       delete filteredUser.password;
       return res.json(filteredUser);
     });
