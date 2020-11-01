@@ -20,7 +20,10 @@ axios.defaults.baseURL = 'http://localhost:3065/api';
 function loginAPI(loginData) {
   // 서버에 요청을 보내는 부분
   // data.userId, data.password를 passport 로그인으로 넘겨준다.
-  return axios.post('http://localhost:3065/api/user/login', loginData);
+  // withCredential을 true로 설정해주면 쿠키를 주고받을 수 있다.
+  return axios.post('http://localhost:3065/api/user/login', loginData, {
+    withCredentials: true,
+  });
 }
 
 function* login(action) {

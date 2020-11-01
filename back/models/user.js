@@ -20,12 +20,13 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.associate = (db) => {
-    db.User.hasMany(db.Post, { as: 'Post' }); // User는 많은 Post를 가지고 있다. : 게시글
+    db.User.hasMany(db.Post, { as: 'Posts' }); // User는 많은 Post를 가지고 있다. : 게시글
     db.User.hasMany(db.Comment); // User는 많은 Comment를 가지고 있다. : 댓글
     db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' });
-    db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers' }); // User는 많은 Follower(User)를 가지고 있다. : 유저가 팔로워 하는 사람들
-    db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings' }); // User는 많은 Following(User)를 가지고 있다. : 유저를 팔로잉하는 사람들
+    db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreignKey: 'followingId' }); // User는 많은 Follower(User)를 가지고 있다. : 유저가 팔로워 하는 사람들
+    db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings', foreignKey: 'followerId' }); // User는 많은 Following(User)를 가지고 있다. : 유저를 팔로잉하는 사람들
   };
 
   return User;
 };
+

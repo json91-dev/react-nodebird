@@ -44,7 +44,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/logout', (req, res) => { // /api/user/logout
-  req.logout()
+  req.logout();
   req.session.destroy();
   res.send('로그아웃 성공');
 });
@@ -64,17 +64,35 @@ router.post('/login', (req, res, next) => { // /api/user/login
     }
 
     // 세션에 유저의 id만 저장.
-    return req.login(user, (loginErr) => { // req.user 를 세션에 저장한다.
+    return req.login(user, async (loginErr) => { // req.user 를 세션에 저장한다.
       if (loginErr) {
         return next(loginErr);
       }
 
       // 사용자 정보를 json으로 보내준다.
-      const filteredUser = Object.assign({}, user.toJSON());
-      delete filteredUser.password;
-      return res.json(filteredUser);
-    });
+      // const filteredUser = Object.assign({}, user.toJSON());
+      // delete filteredUser.password;
+      // return res.json(filteredUser);
 
+      const fullUser = await db.User.findOne({
+        where: { id: user.id },
+        include: [{
+          model: db.Post,
+          as: 'Posts',
+        }, {
+          model: db.User,
+          as: 'Followings',
+        }, {
+          model: db.User,
+          as: 'Followers',
+        }],
+        attributes: ['id', 'nickname', 'userId'], // 특정 필드만 얻어온다. (비밀번호 등 제거)
+      });
+
+      console.log(fullUser);
+
+      return res.json(fullUser);
+    });
   })(req, res, next);
 });
 
