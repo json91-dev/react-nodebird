@@ -17,23 +17,25 @@ import {
 
 axios.defaults.baseURL = 'http://localhost:3065/api';
 
-function loginAPI(loginData) {
+/** 로그인 **/
+
+function logInAPI(logInData) {
   // 서버에 요청을 보내는 부분
   // data.userId, data.password를 passport 로그인으로 넘겨준다.
   // withCredential을 true로 설정해주면 쿠키를 주고받을 수 있다.
-  return axios.post('http://localhost:3065/api/user/login', loginData, {
+  return axios.post('http://localhost:3065/api/user/login', logInData, {
     withCredentials: true,
   });
 }
 
-function* login(action) {
+function* logIn(action) {
   try {
-    const result = yield call(loginAPI, action.data);
+    const result = yield call(logInAPI, action.data);
     yield put({ // put은 dispatch와 동일하다.
       type: LOG_IN_SUCCESS,
       data: result.data,
     });
-  } catch (e) { // loginAPI 실패
+  } catch (e) { // logInAPI 실패
     console.error(e);
     yield put({
       type: LOG_IN_FAILURE,
@@ -41,10 +43,11 @@ function* login(action) {
   }
 }
 
-// 로그인 액션 분기
-function* watchLogin() {
-  yield takeEvery(LOG_IN_REQUEST, login);
+function* watchLogIn() {
+  yield takeEvery(LOG_IN_REQUEST, logIn);
 }
+
+/** 회원가입 **/
 
 function signUpAPI(signUpData) {
   return axios.post('http://localhost:3065/api/user/', signUpData);
@@ -68,9 +71,68 @@ function* watchSignUp() {
   yield takeEvery(SIGN_UP_RESUEST, signUp);
 }
 
+/** 로그아웃 **/
+
+function logOutAPI() {
+  return axios.post('/user/logout', {}, {
+    withCredentials: true,
+  });
+}
+
+function* logOut(action) {
+  try {
+    const result = yield call(logOutAPI, action.data);
+    yield put({ // put은 dispatch와 동일하다.
+      type: LOG_OUT_SUCCESS,
+    });
+  } catch (e) { // logOutAPI 실패
+    console.error(e);
+    yield put({
+      type: LOG_OUT_FAILURE,
+    });
+  }
+}
+
+// 로그인 액션 분기
+function* watchLogOut() {
+  yield takeEvery(LOG_OUT_REQUEST, logOut);
+}
+
+/** 유저정보 **/
+
+// 내정보를 처음에 가져오는 API => Session쿠키를 서버쪽에 보내서 서버쪽 세션 데이터를 결과로 반환받는다. (유저 정보)
+function loadUserAPI() { // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+  return axios.get('/user/', {
+    withCredentials: true, // 서버쪽에서 쿠키를 가져옴.
+  });
+}
+
+function* loadUser(action) {
+  try {
+    const result = yield call(loadUserAPI); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+    yield put({ // put은 dispatch와 동일하다.
+      type: LOAD_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) { // loadUserAPI 실패
+    console.error(e);
+    yield put({
+      type: LOAD_USER_FAILURE,
+    });
+  }
+}
+
+function* watchLoadUser() {
+  yield takeEvery(LOAD_USER_REQUEST, loadUser);
+}
+
+
+
 export default function* userSaga() {
   yield all([
-    fork(watchLogin),
+    fork(watchLogIn),
+    fork(watchLogOut),
+    fork(watchLoadUser),
     fork(watchSignUp),
   ]);
 }
