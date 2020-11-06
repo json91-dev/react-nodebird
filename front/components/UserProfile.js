@@ -7,6 +7,8 @@ const UserProfile = () => {
   const { me } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
+  console.log(me);
+
   // 자식 컴포넌트에게 props로 전달하기 때문에 useCallback 사용
   const onLogout = useCallback(() => {
     dispatch({
@@ -20,12 +22,12 @@ const UserProfile = () => {
         <div key="twit">
           팔로잉
           <br />
-          {me.Followings.length}
+          {me.Followings ? me.Followings.length : 0}
         </div>,
         <div key="twit">
           팔로워
           <br />
-          {me.Followers.length}
+          {me.Followers ? me.Followers.length : 0}
         </div>,
       ]}
     >

@@ -37,10 +37,15 @@ router.post('/', async (req, res, next) => { // POST /api/user => 회원가
   }
 });
 
-// :id는 req.params.id로 가져올 수 있다.
-// 남의 정보 가져오는 것 ex) /api/user/3 => 아이디가 3인 유저정보를 get
-router.get('/:id', (req, res) => {
+router.get('/', (req, res) => { // /api/user
+  if (!req.user) { // cookie를 검사하여 deserialize user가 해당 user를 만들어 준다.
+    return res.status(401).send('로그인이 필요합니다.');
+  }
 
+  // 패스워드를 response로 보내는것을 방지
+  const user = Object.assign({}, req.user.toJSON()); // db에서 꺼내온 객체이기 떄문에 toJSON을 붙여줘야함.
+  delete user.password;
+  return res.json(user);
 });
 
 router.post('/logout', (req, res) => { // /api/user/logout

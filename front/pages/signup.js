@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
-import { SIGN_UP_RESUEST } from '../reducers/user';
+import { SIGN_UP_REQUEST } from '../reducers/user';
 
 const TextInput = ({ value }) => (
   <div>{value}</div>
@@ -62,7 +62,7 @@ const Signup = () => {
       return setTermError(true);
     }
     dispatch({
-      type: SIGN_UP_RESUEST,
+      type: SIGN_UP_REQUEST,
       data: {
         userId: id,
         password,

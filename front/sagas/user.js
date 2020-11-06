@@ -9,7 +9,15 @@ import {
   LOG_IN_SUCCESS,
   LOG_IN_FAILURE,
 
-  SIGN_UP_RESUEST,
+  LOG_OUT_REQUEST,
+  LOG_OUT_SUCCESS,
+  LOG_OUT_FAILURE,
+
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
+
+  SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
   SIGN_UP_FAILURE,
 
@@ -68,7 +76,7 @@ function* signUp(action) {
 }
 
 function* watchSignUp() {
-  yield takeEvery(SIGN_UP_RESUEST, signUp);
+  yield takeEvery(SIGN_UP_REQUEST, signUp);
 }
 
 /** 로그아웃 **/
@@ -81,7 +89,7 @@ function logOutAPI() {
 
 function* logOut(action) {
   try {
-    const result = yield call(logOutAPI, action.data);
+    yield call(logOutAPI, action.data);
     yield put({ // put은 dispatch와 동일하다.
       type: LOG_OUT_SUCCESS,
     });
@@ -107,7 +115,7 @@ function loadUserAPI() { // 쿠키는 알아서 보내주는 것이기 때문에
   });
 }
 
-function* loadUser(action) {
+function* loadUser() {
   try {
     const result = yield call(loadUserAPI); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
     yield put({ // put은 dispatch와 동일하다.
@@ -125,8 +133,6 @@ function* loadUser(action) {
 function* watchLoadUser() {
   yield takeEvery(LOAD_USER_REQUEST, loadUser);
 }
-
-
 
 export default function* userSaga() {
   yield all([

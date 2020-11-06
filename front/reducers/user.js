@@ -8,7 +8,6 @@ const dummyUser = {
 
 // 중앙 통제실
 const initialState = {
-  isLoggedIn: false, // 로그인 여부
   isLoggingOut: false, // 로그아웃 시도중
   isLoggingIn: false, // 로그인 시도중
   logInErrorReason: '', // 로그인 에러 사유
@@ -21,7 +20,7 @@ const initialState = {
   userInfo: null, // 남의 정보
 };
 
-export const SIGN_UP_RESUEST = 'SIGN_UP_RESUEST';
+export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
 
@@ -68,7 +67,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLoggingIn: false,
-        isLoggedIn: true,
         me: action.data,
         isLoading: false,
       };
@@ -78,7 +76,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLoggingIn: false,
-        isLoggedIn: false,
         logInErrorReason: action.error,
         me: null,
       };
@@ -87,12 +84,19 @@ const reducer = (state = initialState, action) => {
     case LOG_OUT_REQUEST: {
       return {
         ...state,
-        isLoggedIn: false,
+        isLoggingOut: true,
+      };
+    }
+
+    case LOG_OUT_SUCCESS: {
+      return {
+        ...state,
+        isLoggingOut: false,
         me: null,
       };
     }
 
-    case SIGN_UP_RESUEST: {
+    case SIGN_UP_REQUEST: {
       return {
         ...state,
         isSigningUp: true,
@@ -115,6 +119,25 @@ const reducer = (state = initialState, action) => {
         isSigningUp: false,
         isSignedUp: false,
         signUpErrorReason: action.error,
+      };
+    }
+
+    case LOAD_USER_REQUEST: {
+      return {
+        ...state,
+      };
+    }
+
+    case LOAD_USER_SUCCESS: {
+      return {
+        ...state,
+        me: action.data,
+      };
+    }
+
+    case LOAD_USER_FAILURE: {
+      return {
+        ...state,
       };
     }
 
