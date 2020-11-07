@@ -18,7 +18,7 @@ import {
 
 function addPostAPI(postData) {
   return axios.post('/post', postData, {
-    withCredentials: true, // 로그인한 사람만 쓸수있도록 쿠키를 ㅓ같이 보내줌
+    withCredentials: true, // 로그인한 사람만 쓸수있도록 쿠키를 같이 보내줌
   });
 }
 
