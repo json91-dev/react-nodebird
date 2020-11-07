@@ -18,15 +18,6 @@ export const initialState = {
   commentAdded: false,
 };
 
-const dummyPost = {
-  id: 2,
-  User: {
-    id: 1,
-    nickname: '제로초',
-  },
-  content: '나는 더미입니다.',
-};
-
 const dummyComment = {
   id: 1,
   User: {
@@ -100,7 +91,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isAddingPost: false,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        mainPosts: [action.data, ...state.mainPosts],
         postAdded: true,
       };
     }
@@ -150,6 +141,26 @@ const reducer = (state = initialState, action) => {
         ...state,
         isAddingComment: false,
         addCommentErrorReason: action.error,
+      };
+    }
+
+    case LOAD_MAIN_POSTS_REQUEST: {
+      return {
+        ...state,
+        mainPosts: [],
+      };
+    }
+
+    case LOAD_MAIN_POSTS_SUCCESS: {
+      return {
+        ...state,
+        mainPosts: action.data,
+      };
+    }
+
+    case LOAD_MAIN_POSTS_FAILURE: {
+      return {
+        ...state,
       };
     }
 

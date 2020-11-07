@@ -16,16 +16,19 @@ const PostForm = () => {
   const onSubmit = useCallback((e) => {
     // Form은 무조건 preventDefault를 붙여준다.
     e.preventDefault();
+    if (!text || !text.trim()) {
+      return alert('게시글을 작성하세요.');
+    }
     dispatch({
       type: ADD_POST_REQUEST,
       data: {
-        text,
+        content: text,
       },
     });
-  }, []);
+  }, [text]); // useCallback안에서 state쓸때 무조건 []배열 안에 넣기.
 
   const onChangeText = useCallback((e) => {
-    setText(e.target.value);
+     setText(e.target.value);
   }, []);
 
   return (

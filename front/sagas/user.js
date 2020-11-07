@@ -23,8 +23,6 @@ import {
 
 } from '../reducers/user';
 
-axios.defaults.baseURL = 'http://localhost:3065/api';
-
 /** 로그인 **/
 
 function logInAPI(logInData) {
