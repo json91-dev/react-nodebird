@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import {
   Avatar, Button, Icon, Card, List, Form, Input, Comment,
 } from 'antd';
-
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_COMMENT_REQUEST } from '../reducers/post';
@@ -57,7 +57,20 @@ const PostCard = ({ post }) => {
         <Card.Meta
           avatar={<Avatar>{post.User.nickname}</Avatar>}
           title={post.User.nickname}
-          description={post.content}
+          description={
+            <div>
+              {post.content.split(/(#[^`s]+)/g).map((v) => { // 정규표현식을 포함하여 파싱.
+                if (v.match(/#[^\s]+/g)) { // 해시태그면 링크로 바꿔줌.
+                  return (
+                    <Link href="/hashtag">
+                      <a>{v}</a>
+                    </Link>
+                  );
+                }
+                return v;
+              })}
+            </div>
+          } // a tag x -> Link
         />
       </Card>
       {commentFormOpened && (

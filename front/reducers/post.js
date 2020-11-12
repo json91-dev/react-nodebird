@@ -1,14 +1,5 @@
 export const initialState = {
-  mainPosts: [{
-    id: 1, // id로 구별한다.
-    User: {
-      id: 1,
-      nickname: '제로초',
-    },
-    content: '첫 번째 게시글',
-    img: 'https://cdn.crowdpic.net/list-thumb/thumb_l_C033BE71DECD4E2B703A91F4FD6D59CD.jpg',
-    Comments: [],
-  }], // 화면에 보일 포스트들
+  mainPosts: [], // 화면에 보일 포스트들
   imagePaths: [], // 미리보기 이미지 경로
   addPostErrorReason: '', // 포스트 업로드 실패 사유
   isAddingPost: false, // 포스트 업로드 중
@@ -16,16 +7,6 @@ export const initialState = {
   isAddingComment: false,
   addCommentErrorReason: '',
   commentAdded: false,
-};
-
-const dummyComment = {
-  id: 1,
-  User: {
-    id: 1,
-    nickname: '제로초',
-  },
-  createdAt: new Date(),
-  content: '더미 댓글입니다.',
 };
 
 export const LOAD_MAIN_POSTS_REQUEST = 'LOAD_MAIN_POSTS_REQUEST';
@@ -125,7 +106,7 @@ const reducer = (state = initialState, action) => {
       // 아래와 같은 부분이 불편하기 때문에 immutable, immer을 사용한다.
       const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId);
       const post = state.mainPosts[postIndex];
-      const Comments = [...post.Comments, dummyComment]; //  불변성 확보
+      const Comments = [...post.Comments, action.data.comment]; //  불변성 확보
       const mainPosts = [...state.mainPosts];
       mainPosts[postIndex] = { ...post, Comments };
       return {
