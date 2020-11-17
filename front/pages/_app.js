@@ -14,13 +14,14 @@ import rootSaga from '../sagas';
 
 // Component는 next에서 넣어주는 props이다.
 // 현재 소스코드에서 index, profile, signup등의 컴포넌트들에 대한 정보를 가지고 있다.
-const NodeBird = ({ Component, store }) => (
+// pageProps는 각각의 컴포넌트에 대해 props를 내려주는데 ...pageProps로 넘겨주어야 한다.
+const NodeBird = ({ Component, store, pageProps }) => (
   <Provider store={store}>
     <Head>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.6.3/antd.min.css" />
     </Head>
     <AppLayout>
-      <Component />
+      <Component {...pageProps} />
     </AppLayout>
   </Provider>
 );
@@ -30,6 +31,18 @@ NodeBird.propTypes = {
   // required : 항상 props가 존재하여야함.
   Component: PropTypes.elementType.isRequired,
   store: PropTypes.object.isRequired,
+  pageProps: PropTypes.object.isRequired,
+};
+
+// next에서 실행시켜주는 부분이다.
+NodeBird.getInitialProps = async (context) => {
+  console.log(context);
+  const { ctx, Component } = context;
+  let pageProps = {};
+  if (context.Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx); // 컴포넌트에서 return한 props가 해당 pageProps로 저장됨.
+  }
+  return { pageProps } // 해당 props가 컴포넌트의 props임.
 };
 
 // nodeBird 컴포넌트에 props로 store를 넣어주는 역활을 함.

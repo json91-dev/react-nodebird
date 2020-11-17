@@ -29,6 +29,14 @@ app.prepare().then(() => {
     }
   }));
 
+  server.get('/hashtag/:tag', (req, res) => {
+    return app.render(req, res, '/hashtag', { tag: req.params.tag });
+  });
+
+  server.get('/user/:id', (req, res) => {
+    return app.render(req, res, '/user', { id: req.params.id });
+  });
+
   server.get('*', (req, res) => { // 모든 get 요청을 해당 코드에서 처리함.
     return handle(req, res);
   });
