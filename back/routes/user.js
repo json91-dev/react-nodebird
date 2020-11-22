@@ -8,6 +8,17 @@ const router = express.Router();
 // API는 다른 서비스가 내 서비스의 기능을 실행 할 수 있게 열어둔 창구
 // router.post('/api/user', (req, res) => { => /api/user 부분을 /로 대체
 
+router.get('/', (req, res) => { // /api/user
+  if (!req.user) { // cookie를 검사하여 deserialize user가 해당 user를 만들어 준다.
+    return res.status(401).send('로그인이 필요합니다.');
+  }
+
+  // 패스워드를 response로 보내는것을 방지
+  const user = Object.assign({}, req.user.toJSON()); // db에서 꺼내온 객체이기 떄문에 toJSON을 붙여줘야함.
+  delete user.password;
+  return res.json(user);
+});
+
 router.post('/', async (req, res, next) => { // POST /api/user => 회원가
   try {
     const exUser = await db.User.findOne({
@@ -37,21 +48,38 @@ router.post('/', async (req, res, next) => { // POST /api/user => 회원가
   }
 });
 
-router.get('/', (req, res) => { // /api/user
-  if (!req.user) { // cookie를 검사하여 deserialize user가 해당 user를 만들어 준다.
-    return res.status(401).send('로그인이 필요합니다.');
+router.get('/:id', async (req, res, next) => {
+  try {
+    const user = await db.User.findOne({
+      where: { id: parseInt(req.params.id, 10) },
+      attributes: ['id', 'nickname'],
+      include: [{
+        model: db.Post,
+        as: 'Posts',
+        attributes: ['id'],
+      }, {
+        model: db.User,
+        as: 'Followings',
+        attributes: ['id'],
+      }, {
+        model: db.User,
+        as: 'Followings',
+        attributes: ['id'],
+      }],
+    });
+
+    // 사생활 정보 방지
+    // Posts와 Follower, Following들의 id 배열을 내려주는 대신 각각의 갯수만을 Front쪽으로 넘겨주도록 처리
+    const jsonUser = user.toJSON();
+    jsonUser.Posts = jsonUser.Posts ? jsonUser.Posts.length : 0;
+    jsonUser.Followings = jsonUser.Followings ? jsonUser.Followings.length : 0;
+    jsonUser.Followers = jsonUser.Followers ? jsonUser.Followers.length : 0;
+
+    res.json(jsonUser);
+  } catch (e) {
+    console.error(e);
+    next(e);
   }
-
-  // 패스워드를 response로 보내는것을 방지
-  const user = Object.assign({}, req.user.toJSON()); // db에서 꺼내온 객체이기 떄문에 toJSON을 붙여줘야함.
-  delete user.password;
-  return res.json(user);
-});
-
-router.post('/logout', (req, res) => { // /api/user/logout
-  req.logout();
-  req.session.destroy();
-  res.send('로그아웃 성공');
 });
 
 router.post('/login', (req, res, next) => { // /api/user/login
@@ -101,6 +129,12 @@ router.post('/login', (req, res, next) => { // /api/user/login
   })(req, res, next);
 });
 
+router.post('/logout', (req, res) => { // /api/user/logout
+  req.logout();
+  req.session.destroy();
+  res.send('로그아웃 성공');
+});
+
 router.get('/:id/follow', (req, res) => { // /api/user/:id/follow
 
 });
@@ -117,8 +151,23 @@ router.delete('/:id/follower', (req, res) => {
 
 });
 
-router.get('/:id/posts', (req, res) => {
-
+router.get('/:id/posts', async (req, res, next) => {
+  try {
+    const posts = await db.Post.findAll({
+      where: {
+        UserId: parseInt(req.params.id, 10),
+        RetweetId: null, // 리트윗한게 아닌 내가쓴 게시글만 불러오기
+      },
+      include: [{
+        model: db.User, // 게시글 작성자
+        attributes: ['id', 'nickname'],
+      }],
+    });
+    res.json(posts);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
 });
 
 module.exports = router;

@@ -104,21 +104,27 @@ function* watchLogOut() {
   yield takeEvery(LOG_OUT_REQUEST, logOut);
 }
 
-/** 유저정보 **/
+/**
+ * 유저정보를 불러오는 API
+ * 자신의 정보 또는 남의 정보를 불러옴
+ */
 
-// 내정보를 처음에 가져오는 API => Session쿠키를 서버쪽에 보내서 서버쪽 세션 데이터를 결과로 반환받는다. (유저 정보)
-function loadUserAPI() { // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
-  return axios.get('/user/', {
+// 내정보를 처음에 가져오는 API
+// : Session쿠키를 서버쪽에 보내서 서버쪽 세션 데이터를 결과로 반환받는다. (유저 정보)
+// 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+function loadUserAPI(userId) {
+  return axios.get(userId ? `/user/${userId}` : '/user/', {
     withCredentials: true, // 서버쪽에서 쿠키를 가져옴.
   });
 }
 
-function* loadUser() {
+function* loadUser(action) {
   try {
-    const result = yield call(loadUserAPI); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+    const result = yield call(loadUserAPI, action.data); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
     yield put({ // put은 dispatch와 동일하다.
       type: LOAD_USER_SUCCESS,
       data: result.data,
+      me: !action.data, // userId가 없으면 내정보이기 때문에 true
     });
   } catch (e) { // loadUserAPI 실패
     console.error(e);

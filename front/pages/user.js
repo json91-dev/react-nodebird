@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from "react-redux";
-import { Avatar, Card } from "antd";
-import { LOAD_USER_POSTS_REQUEST } from "../reducers/post";
-import { LOAD_USER_REQUEST } from "../reducers/user";
-import PostCard from "../components/PostCard";
+import { useDispatch, useSelector } from 'react-redux';
+import { Avatar, Card } from 'antd';
+import { LOAD_USER_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_USER_REQUEST } from '../reducers/user';
+import PostCard from '../components/PostCard';
 
 const User = ({ id }) => {
   console.log(id);
@@ -14,51 +14,52 @@ const User = ({ id }) => {
 
   useEffect(() => {
     dispatch({
-      type:LOAD_USER_REQUEST,
+      type: LOAD_USER_REQUEST,
       data: id,
     });
 
     dispatch({
       type: LOAD_USER_POSTS_REQUEST,
       data: id,
-    })
+    });
   }, []);
 
   return (
     <div>
       {userInfo
-        ? <Card
+        ? (
+          <Card
             actions={[
-            <div key="twit">
-              짹짹
-              <br/>
-              {userInfo.Post}
-            </div>,
-            <div key="following">
-              팔로잉
-              <br/>
-              {userInfo.Followings}
-            </div>,
-            <div key="follower">
-              팔로워
-              <br/>
-              {userInfo.Followers}
-            </div>
-          ]}
-        >
-          <Card.Meta
-            avartar={<Avatar>{userInfo.nickname[0]}</Avatar>}
-            title={userInfo.nickname}
-          />
+              <div key="twit">
+                짹짹
+                <br />
+                {userInfo.Posts}
+              </div>,
+              <div key="following">
+                팔로잉
+                <br />
+                {userInfo.Followings}
+              </div>,
+              <div key="follower">
+                팔로워
+                <br />
+                {userInfo.Followers}
+              </div>,
+            ]}
+          >
+            <Card.Meta
+              avartar={<Avatar>{userInfo.nickname[0]}</Avatar>}
+              title={userInfo.nickname}
+            />
 
-        </Card>
-        : null
-      }
+          </Card>
+        )
+        : null}
       {mainPosts.map(c => {
-        <PostCard key={+c.createdAt} post={c}/>
+        <PostCard key={+c.createdAt} post={c} />;
       })}
     </div>
-  )
+  );
 };
 
 User.propTypes = {
@@ -67,8 +68,7 @@ User.propTypes = {
 
 User.getInitialProps = async (context) => {
   console.log('user getInitialProps', context.query.id);
-  return { id: parseInt(context.query.id, 10) }
+  return { id: parseInt(context.query.id, 10) };
 };
 
-export default User
-
+export default User;

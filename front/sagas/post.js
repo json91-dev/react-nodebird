@@ -14,6 +14,10 @@ import {
   LOAD_MAIN_POSTS_REQUEST,
   LOAD_MAIN_POSTS_SUCCESS,
   LOAD_MAIN_POSTS_FAILURE,
+  LOAD_USER_POSTS_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
+  LOAD_USER_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_REQUEST, LOAD_HASHTAG_POSTS_FAILURE, LOAD_HASHTAG_POSTS_SUCCESS,
 } from '../reducers/post';
 
 function addPostAPI(postData) {
@@ -41,6 +45,8 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+
+/** Main 게시글 요청 **/
 function loadMainPostsAPI() {
   return axios.get('/posts'); // 쿠키를 안넣어도 된다.
 }
@@ -65,6 +71,7 @@ function* watchLoadMainPosts() {
   yield takeLatest(LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
 }
 
+/** 댓글 쓰기 **/
 function addCommentAPI() {
 
 }
@@ -86,6 +93,56 @@ function* addComment(action) {
   }
 }
 
+/** 해시태그 요청 **/
+function loadHashtagPostsAPI(tag) {
+  return axios.get(`/hashtag/${tag}`); // 쿠키를 안넣어도 된다.
+}
+
+function* loadHashtagPosts(action) {
+  try {
+    const result = yield call(loadHashtagPostsAPI, action.data);
+
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadHashtagPosts() {
+  yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+}
+
+/** 해시태그 요청 **/
+function loadUserPostsAPI(id) {
+  return axios.get(`/user/${id}/posts`); // 쿠키를 안넣어도 된다.
+}
+
+function* loadUserPosts(action) {
+  try {
+    const result = yield call(loadUserPostsAPI, action.data);
+
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      error: e,
+    });
+  }
+}
+
+function* watchLoadUserPosts() {
+  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
+
 function* watchAddComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
@@ -95,5 +152,7 @@ export default function* postSaga() {
     fork(watchLoadMainPosts),
     fork(watchAddPost),
     fork(watchAddComment),
+    fork(watchLoadHashtagPosts),
+    fork(watchLoadUserPosts),
   ]);
 }
