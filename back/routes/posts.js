@@ -9,7 +9,7 @@ router.get('/', async (req, res, next) => { // GET /api/posts
     const posts = await db.Post.findAll({
       include: [{
         model: db.User,
-        attribute: ['id', 'nickname'],
+        attributes: ['id', 'nickname'],
         order: [['createdAt', 'DESC']], // DESC는 내림차순, ASC는 오름차순
       }],
     });

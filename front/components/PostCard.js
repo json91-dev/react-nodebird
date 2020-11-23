@@ -13,6 +13,7 @@ const PostCard = ({ post }) => {
   const { me } = useSelector(state => state.user);
   const { commentAdded, isLoadingComment } = useSelector(state => state.post);
   const dispatch = useDispatch();
+  console.warn('실행');
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);
@@ -55,14 +56,14 @@ const PostCard = ({ post }) => {
         extra={<Button>팔로우</Button>}
       >
         <Card.Meta
-          avatar={<Avatar>{post.User.nickname}</Avatar>}
+          avatar={<Link href={`/user/${post.User.id}`}><a><Avatar>{post.User.nickname}</Avatar></a></Link>}
           title={post.User.nickname}
-          description={
+          description={(
             <div>
-              {post.content.split(/(#[^`s]+)/g).map((v) => { // 정규표현식을 포함하여 파싱.
+              {post.content.split(/(#[^\s]+)/g).map((v) => { // 정규표현식을 포함하여 파싱.
                 if (v.match(/#[^\s]+/g)) { // 해시태그면 링크로 바꿔줌.
                   return (
-                    <Link href="/hashtag">
+                    <Link href={`/hashtag/${v.slice(1)}`} key={v}>
                       <a>{v}</a>
                     </Link>
                   );
@@ -70,7 +71,7 @@ const PostCard = ({ post }) => {
                 return v;
               })}
             </div>
-          } // a tag x -> Link
+          )} // a tag x -> Link
         />
       </Card>
       {commentFormOpened && (
@@ -89,7 +90,7 @@ const PostCard = ({ post }) => {
               <li key={item.id}>
                 <Comment
                   author={item.User.nickname}
-                  avatar={<Avatar>{item.User.nickname}</Avatar>}
+                  avatar={<Link href={`/user/${item.User.id}`}><a><Avatar>{item.User.nickname}</Avatar></a></Link>}
                   content={item.content}
                 />
               </li>
