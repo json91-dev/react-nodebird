@@ -40,4 +40,61 @@ router.post('/images', (req, res) => {
 
 });
 
+router.get('/:id/comments', async (req, res, next) => {
+  try {
+    const post = await db.Post.findOne({ where: { id: req.params.id } });
+    if (!post) {
+      return res.status(404).send('포스트가 존재하지 않습니다.');
+    }
+    const comments = await db.Comment.findAll({
+      where: {
+        PostId: req.params.id,
+      },
+      order: [['createdAt', 'ASC']],
+      include: [{
+        model: db.User,
+        attributes: ['id', 'nickname'],
+      }],
+    });
+    return res.json(comments);
+  } catch (e) {
+    console.error(e);
+    return next(e);
+  }
+});
+
+router.post('/:id/comment', async (req, res, next) => { // POST /api/post/3/comment
+  try {
+    if (!req.user) {
+      return res.status(401).send('로그인이 필요합니다.');
+    }
+    const post = await db.Post.findOne({ where: { id: req.params.id } });
+    if (!post) {
+      return res.status(404).send('포스트가 존재하지 않습니다.');
+    }
+    const newComment = await db.Comment.create({
+      PostId: post.id,
+      UserId: req.user.id,
+      content: req.body.content,
+    });
+    await post.addComment(newComment.id);
+
+    // 완성된 게시글 조회하여 프론트로 보내줌
+    const comment = await db.Comment.findOne({
+      where: {
+        id: newComment.id,
+      },
+      include: [{
+        model: db.User, // 댓글 작성자 정보 넣기
+        attributes: ['id', 'nickname'],
+      }],
+    });
+
+    return res.json(comment); // 코드가 중간에서 끊어지지 않았다는것을 확인하기 위해 return을 써준다.
+  } catch (e) {
+    console.error(e);
+    return next(e);
+  }
+});
+
 module.exports = router;

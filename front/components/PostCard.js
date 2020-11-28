@@ -5,7 +5,7 @@ import {
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_COMMENT_REQUEST } from '../reducers/post';
+import { ADD_COMMENT_REQUEST, LOAD_COMMENTS_REQUEST } from '../reducers/post';
 
 const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -17,6 +17,12 @@ const PostCard = ({ post }) => {
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);
+    if (!commentFormOpened) { // 댓글창이 닫혀있을때 켜면서 댓글목록을 불러옴
+      dispatch({
+        type: LOAD_COMMENTS_REQUEST,
+        data: post.id,
+      });
+    }
   }, []);
 
   const onSubmitComment = useCallback((e) => {
@@ -30,9 +36,10 @@ const PostCard = ({ post }) => {
       type: ADD_COMMENT_REQUEST,
       data: {
         postId: post.id,
+        content: commentText,
       },
     });
-  }, [me && me.id]);
+  }, [me && me.id, commentText]);
 
   useEffect(() => {
     setCommentText('');
@@ -106,6 +113,7 @@ PostCard.propTypes = {
   // Object의 상세를 적어줄 수 있음
   post: PropTypes.shape({
     User: PropTypes.object,
+    id: PropTypes.number,
     content: PropTypes.string,
     img: PropTypes.string,
     createdAt: PropTypes.object,
