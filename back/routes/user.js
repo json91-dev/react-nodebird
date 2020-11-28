@@ -1,18 +1,14 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const passport = require("passport");
+const passport = require('passport');
 const db = require('../models');
-
+const { isLoggedIn } = require('./middleware');
 const router = express.Router();
 
 // API는 다른 서비스가 내 서비스의 기능을 실행 할 수 있게 열어둔 창구
 // router.post('/api/user', (req, res) => { => /api/user 부분을 /로 대체
 
-router.get('/', (req, res) => { // /api/user
-  if (!req.user) { // cookie를 검사하여 deserialize user가 해당 user를 만들어 준다.
-    return res.status(401).send('로그인이 필요합니다.');
-  }
-
+router.get('/', isLoggedIn, (req, res) => { // /api/user
   // 패스워드를 response로 보내는것을 방지
   const user = Object.assign({}, req.user.toJSON()); // db에서 꺼내온 객체이기 떄문에 toJSON을 붙여줘야함.
   delete user.password;
