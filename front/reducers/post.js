@@ -75,7 +75,6 @@ const reducer = (state = initialState, action) => {
     case UPLOAD_IMAGES_FAILURE: {
       return {
         ...state,
-
       };
     }
 
