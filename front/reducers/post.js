@@ -59,6 +59,26 @@ export const ADD_DUMMY = 'ADD_DUMMY';
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case UPLOAD_IMAGES_REQUEST: {
+      return {
+        ...state,
+      };
+    }
+
+    case UPLOAD_IMAGES_SUCCESS: {
+      return {
+        ...state,
+        imagePath: [...state.imagePaths, ...action.data], // 이미지 미리보기 경로
+      };
+    }
+
+    case UPLOAD_IMAGES_FAILURE: {
+      return {
+        ...state,
+
+      };
+    }
+
     case ADD_POST_REQUEST: {
       return {
         ...state,
