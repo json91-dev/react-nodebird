@@ -93,10 +93,7 @@ function* addComment(action) {
         comment: result.data,
       },
     });
-    console.error('11111');
   } catch (e) {
-    console.error('2222');
-    console.error(e);
     yield put({
       type: ADD_COMMENT_FAILURE,
       error: e,
@@ -189,7 +186,7 @@ function* watchLoadUserPosts() {
 
 /** 이미지 업로드 **/
 function uploadImagesAPI(formData) {
-  return axios.post(`/post/images`, formData, {
+  return axios.post('/post/images', formData, {
     withCredentials: true, // 이미지는 로그인한 사용자만 올릴 수 있음.
   }); // 쿠키를 안넣어도 된다.
 }

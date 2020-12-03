@@ -68,13 +68,20 @@ const reducer = (state = initialState, action) => {
     case UPLOAD_IMAGES_SUCCESS: {
       return {
         ...state,
-        imagePath: [...state.imagePaths, ...action.data], // 이미지 미리보기 경로
+        imagePaths: [...state.imagePaths, ...action.data], // 이미지 미리보기 경로
       };
     }
 
     case UPLOAD_IMAGES_FAILURE: {
       return {
         ...state,
+      };
+    }
+
+    case REMOVE_IMAGE: {
+      return {
+        ...state,
+        imagePaths: state.imagePaths.filter((v, i) => i !== action.index),
       };
     }
 

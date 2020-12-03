@@ -20,6 +20,8 @@ passportConfig(); // 패스포트 전략을 중앙통제실로 연결
 
 // 요청이 들어왔을때 요청을 찍어주는 기능을 할 수 있게된다.
 app.use(morgan('dev'));
+// static middleware
+app.use('/', express.static('uploads'));
 // 아래 두줄이 있을때 req.body를 사용할 수 있게 된다.
 app.use(express.json()); // JSON 형식의 본문을 처리한다.
 app.use(express.urlencoded({ extended: true })); // Form으로 넘어온 데이터를 처리한다.
