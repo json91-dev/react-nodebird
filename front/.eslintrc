@@ -32,6 +32,7 @@
     "arrow-parens": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/anchor-is-valid": "off",
-    "max-len": ["error", { "code": 120}]
+    "max-len": ["error", { "code": 120}],
+    "jsx-a11y/alt-text": 0,
   }
 }

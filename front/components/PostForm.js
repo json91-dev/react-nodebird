@@ -27,9 +27,7 @@ const PostForm = () => {
     formData.append('content', text); // req.body.content에 텍스트 파일 저
     dispatch({
       type: ADD_POST_REQUEST,
-      data: {
-        content: text,
-      },
+      data: formData,
     });
   }, [text, imagePaths]); // useCallback안에서 state쓸때 무조건 []배열 안에 넣기.
 

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_COMMENT_REQUEST, LOAD_COMMENTS_REQUEST } from '../reducers/post';
+import PostImages from "./PostImages";
 
 const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -52,7 +53,8 @@ const PostCard = ({ post }) => {
     <div>
       <Card
         key={post.createdAt}
-        cover={post.img && <img alt="example" src={post.img} />}
+        cover={post.Images[0] && <PostImages images={post.Images} />}
+        // {<img alt="example" src={`http://localhost:3065/${post.Images[0].src}`}/>}
         actions={[
           <Icon type="retweet" key="retweet" />,
           <Icon type="heart" key="heart" />,
@@ -62,7 +64,11 @@ const PostCard = ({ post }) => {
         extra={<Button>팔로우</Button>}
       >
         <Card.Meta
-          avatar={<Link href={`/user/${post.User.id}`}><a><Avatar>{post.User.nickname}</Avatar></a></Link>}
+          avatar={(
+            <Link href={{ pathname: '/user', query: { id: post.User.id } }} as={`/user/${post.User.id}`}>
+              <a><Avatar>{post.User.nickname[0]}</Avatar></a>
+            </Link>
+          )}
           title={post.User.nickname}
           description={(
             <div>
