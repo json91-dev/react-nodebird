@@ -20,13 +20,18 @@ const PostForm = () => {
     if (!text || !text.trim()) {
       return alert('게시글을 작성하세요.');
     }
+    const formData = new FormData();
+    imagePaths.forEach((i) => {
+      formData.append('image', i); // req.body.image에 이미지경로 저장 => 파일이었다면 req.files.images로 저
+    });
+    formData.append('content', text); // req.body.content에 텍스트 파일 저
     dispatch({
       type: ADD_POST_REQUEST,
       data: {
         content: text,
       },
     });
-  }, [text]); // useCallback안에서 state쓸때 무조건 []배열 안에 넣기.
+  }, [text, imagePaths]); // useCallback안에서 state쓸때 무조건 []배열 안에 넣기.
 
   const onChangeText = useCallback((e) => {
     setText(e.target.value);
@@ -38,12 +43,10 @@ const PostForm = () => {
     [].forEach.call(e.target.files, (f) => { // e.target.files가 유사배열이기 때문에 배열의 foreach를 사용
       imageFormData.append('images', f);
     });
-
     dispatch({
       type: UPLOAD_IMAGES_REQUEST,
       data: imageFormData,
     });
-
   }, []);
 
   // 클릭했을때 이미지 인풋창이 열리도록 구현

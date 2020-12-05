@@ -10,8 +10,10 @@ router.get('/', async (req, res, next) => { // GET /api/posts
       include: [{
         model: db.User,
         attributes: ['id', 'nickname'],
-        order: [['createdAt', 'DESC']], // DESC는 내림차순, ASC는 오름차순
+      }, {
+        model: db.Image,
       }],
+      order: [['createdAt', 'DESC']], // DESC는 내림차순, ASC는 오름차순
     });
     res.json(posts);
   } catch (e) {

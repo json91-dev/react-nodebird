@@ -59,7 +59,6 @@ function loadMainPostsAPI() {
 function* loadMainPosts() {
   try {
     const result = yield call(loadMainPostsAPI);
-
     yield put({
       type: LOAD_MAIN_POSTS_SUCCESS,
       data: result.data,
@@ -210,7 +209,6 @@ function* uploadImages(action) {
 function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
-
 
 export default function* postSaga() {
   yield all([

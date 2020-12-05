@@ -13,7 +13,6 @@ const PostCard = ({ post }) => {
   const { me } = useSelector(state => state.user);
   const { commentAdded, isLoadingComment } = useSelector(state => state.post);
   const dispatch = useDispatch();
-  console.warn('실행');
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);

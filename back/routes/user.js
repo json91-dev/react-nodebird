@@ -157,6 +157,8 @@ router.get('/:id/posts', async (req, res, next) => {
       include: [{
         model: db.User, // 게시글 작성자
         attributes: ['id', 'nickname'],
+      }, {
+        model: db.Image,
       }],
     });
     res.json(posts);

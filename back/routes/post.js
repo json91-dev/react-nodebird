@@ -5,7 +5,21 @@ const db = require('../models');
 const { isLoggedIn } = require('./middleware');
 const router = express.Router();
 
-router.post('/', isLoggedIn, async (req, res, next) => { // POST /api/post
+const upload = multer({
+  storage: multer.diskStorage({ // 서버쪽 하드디스크나, SSD에 저장하는 옵션, S3나 구글 클라우드 스토리지로 바꿀수도 있음 (배포때 s3)
+    destination(req, file, done) { // 어떤 폴더에 저장할지 정해줌
+      done(null, 'uploads'); // uploads 폴더로 저장
+    },
+    filename(req, file, done) {
+      const ext = path.extname(file.originalname); // path모듈로 확장자를 추출해낸다.ex)제로초.png, ext===.png, basename===제로초
+      const basename = path.basename(file.originalname, ext); // 확장자가 아닌 파일 이름을 추출해낸다.
+      done(null, basename + new Date().valueOf() + ext); // 기존 파일이 덮어써지는것을 방지하기 위해 Date를 붙인다.
+    },
+    limits: { fileSize: 20 * 1024 * 1024 }, // 업로드 가능 용량을 20MB로 용량을 제한.너무 많은 용량 할당시 해커의 공격대상이 될 수도 있다.
+  }),
+});
+
+router.post('/', isLoggedIn, upload.none(), async (req, res, next) => { // POST /api/post
   try {
     const hashtags = req.body.content.match(/#[^\s]+/g);
     const newPost = await db.Post.create({
@@ -22,6 +36,19 @@ router.post('/', isLoggedIn, async (req, res, next) => { // POST /api/post
       await newPost.addHashtags(result.map(r => r[0]));
     }
 
+    // 이미지 주소를 따로 DB에 저장한 뒤 게시글과 연결합니다.
+    if (req.body.image) { // 이미지 주소를 여러개 올리면 image: [주소1, 주소2]
+      if (Array.isArray(req.body.image)) {
+        const images = await Promise.all(req.body.image.map(v => {
+          return db.Image.create({ src: v });
+        }));
+        await newPost.addImages(images);
+      } else { // 이미지를 하나만 올리면 image: 주소1
+        const image = await db.Image.create({ src: req.body.image });
+        await newPost.addImage(image);
+      }
+    }
+
     // const User = await newPost.getUser();
     // newPost.user = User;
     // res.json(newPost);
@@ -29,6 +56,8 @@ router.post('/', isLoggedIn, async (req, res, next) => { // POST /api/post
       where: { id: newPost.id },
       include: [{
         model: db.User,
+      }, {
+        model: db.Image,
       }],
     });
 
@@ -37,20 +66,6 @@ router.post('/', isLoggedIn, async (req, res, next) => { // POST /api/post
     console.error(e);
     next(e);
   }
-});
-
-const upload = multer({
-  storage: multer.diskStorage({ // 서버쪽 하드디스크나, SSD에 저장하는 옵션, S3나 구글 클라우드 스토리지로 바꿀수도 있음 (배포때 s3)
-    destination(req, file, done) { // 어떤 폴더에 저장할지 정해줌
-      done(null, 'uploads'); // uploads 폴더로 저장
-    },
-    filename(req, file, done) {
-      const ext = path.extname(file.originalname); // path모듈로 확장자를 추출해낸다.ex)제로초.png, ext===.png, basename===제로초
-      const basename = path.basename(file.originalname, ext); // 확장자가 아닌 파일 이름을 추출해낸다.
-      done(null, basename + new Date().valueOf() + ext); // 기존 파일이 덮어써지는것을 방지하기 위해 Date를 붙인다.
-    },
-    limits: { fileSize: 20 * 1024 * 1024 }, // 업로드 가능 용량을 20MB로 용량을 제한.너무 많은 용량 할당시 해커의 공격대상이 될 수도 있다.
-  }),
 });
 
 router.post('/images', upload.array('images'), (req, res) => { // 프론트에서 FormData로 보내주는 이름이 일치하여야함.
