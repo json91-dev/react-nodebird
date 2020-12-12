@@ -190,6 +190,56 @@ const reducer = (state = initialState, action) => {
       };
     }
 
+    case LIKE_POST_REQUEST: {
+      return {
+        ...state,
+      };
+    }
+
+    case LIKE_POST_SUCCESS: {
+      // 좋아요를 누른 게시글을 찾고 해당 게시글의 "좋아요" 배열 목록에 현재 user의 id를 넣어
+      const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId);
+      const post = state.mainPosts[postIndex];
+      const Likers = [{ id: action.data.userId }, ...post.Likers];
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = { ...post, Likers };
+      return {
+        ...state,
+        mainPosts,
+      };
+    }
+
+    case LIKE_POST_FAILURE: {
+      return {
+        ...state,
+      };
+    }
+
+    case UNLIKE_POST_REQUEST: {
+      return {
+        ...state,
+      };
+    }
+
+    case UNLIKE_POST_SUCCESS: {
+      const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId);
+      const post = state.mainPosts[postIndex];
+      const Likers = post.Likers.filter(v => v.id !== action.data.userId);
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = { ...post, Likers };
+      return {
+        ...state,
+        mainPosts,
+      };
+    }
+
+    case UNLIKE_POST_FAILURE: {
+      console.error(action.error);
+      return {
+        ...state,
+      };
+    }
+
     default: {
       return {
         ...state,

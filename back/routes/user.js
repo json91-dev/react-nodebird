@@ -159,6 +159,10 @@ router.get('/:id/posts', async (req, res, next) => {
         attributes: ['id', 'nickname'],
       }, {
         model: db.Image,
+      }, {
+        model: db.User, // 게시글을 좋아효 해준사람 목록을 include
+        through: 'Like',
+        as: 'Likers',
       }],
     });
     res.json(posts);
