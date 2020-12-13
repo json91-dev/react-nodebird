@@ -8,10 +8,28 @@ const router = express.Router();
 // API는 다른 서비스가 내 서비스의 기능을 실행 할 수 있게 열어둔 창구
 // router.post('/api/user', (req, res) => { => /api/user 부분을 /로 대체
 
-router.get('/', isLoggedIn, (req, res) => { // /api/user
+router.get('/', isLoggedIn, async (req, res, next) => { // /api/user
   // 패스워드를 response로 보내는것을 방지
-  const user = Object.assign({}, req.user.toJSON()); // db에서 꺼내온 객체이기 떄문에 toJSON을 붙여줘야함.
-  delete user.password;
+  // const user = Object.assign({}, req.user.toJSON()); // db에서 꺼내온 객체이기 떄문에 toJSON을 붙여줘야함.
+  // delete user.password;
+  const user = await db.User.findOne({
+    where: { id: parseInt(req.user.id, 10) },
+    attributes: ['id', 'nickname'],
+    include: [{
+      model: db.Post,
+      as: 'Posts',
+      attributes: ['id'],
+    }, {
+      model: db.User,
+      as: 'Followers',
+      attributes: ['id'],
+    }, {
+      model: db.User,
+      as: 'Followings',
+      attributes: ['id'],
+    }],
+  });
+
   return res.json(user);
 });
 
@@ -55,7 +73,7 @@ router.get('/:id', async (req, res, next) => {
         attributes: ['id'],
       }, {
         model: db.User,
-        as: 'Followings',
+        as: 'Followers',
         attributes: ['id'],
       }, {
         model: db.User,
