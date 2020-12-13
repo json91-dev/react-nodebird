@@ -131,16 +131,30 @@ router.post('/logout', (req, res) => { // /api/user/logout
   res.send('로그아웃 성공');
 });
 
-router.get('/:id/follow', (req, res) => { // /api/user/:id/follow
-
+router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
+  try {
+    const me = await db.User.findOne({
+      where: { id: req.user.id },
+    });
+    await me.addFollowing(req.params.id);
+    res.send(req.params.id);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
 });
 
-router.post('/:id/follow', (req, res) => {
-
-});
-
-router.delete('/:id/follow', (req, res) => {
-
+router.delete('/:id/follow', isLoggedIn, async (req, res, next) => {
+  try {
+    const me = await db.User.findOne({
+      where: { id: req.user.id },
+    });
+    await me.removeFollowing(req.params.id);
+    res.send(req.params.id);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
 });
 
 router.delete('/:id/follower', (req, res) => {

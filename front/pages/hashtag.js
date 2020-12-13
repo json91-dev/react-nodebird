@@ -13,7 +13,7 @@ const Hashtag = ({ tag }) => {
     dispatch({
       type: LOAD_HASHTAG_POSTS_REQUEST,
       data: tag,
-    })
+    });
   }, []);
 
   return (

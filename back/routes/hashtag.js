@@ -18,6 +18,15 @@ router.get('/:tag', async (req, res, next) => {
         model: db.User, // 게시글을 좋아효 해준사람 목록을 include
         through: 'Like',
         as: 'Likers',
+      }, {
+        model: db.Post,
+        as: 'Retweet',
+        include: [{
+          model: db.User,
+          attributes: ['id', 'nickname'],
+        }, {
+          model: db.Image,
+        }],
       }],
     });
 

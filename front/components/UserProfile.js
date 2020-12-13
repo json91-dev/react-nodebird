@@ -7,8 +7,6 @@ const UserProfile = () => {
   const { me } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
-  console.log(me);
-
   // 자식 컴포넌트에게 props로 전달하기 때문에 useCallback 사용
   const onLogout = useCallback(() => {
     dispatch({

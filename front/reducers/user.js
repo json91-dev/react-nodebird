@@ -44,9 +44,9 @@ export const FOLLOW_USER_REQUEST = 'FOLLOW_USER_REQUEST';
 export const FOLLOW_USER_SUCCESS = 'FOLLOW_USER_SUCCESS';
 export const FOLLOW_USER_FAILURE = 'FOLLOW_USER_FAILURE';
 
-export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
-export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
-export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
+export const UNFOLLOW_USER_REQUEST = 'UNFOLLOW_USER_REQUEST';
+export const UNFOLLOW_USER_SUCCESS = 'UNFOLLOW_USER_SUCCESS';
+export const UNFOLLOW_USER_FAILURE = 'UNFOLLOW_USER_FAILURE';
 
 export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST';
 export const REMOVE_FOLLOWER_SUCCESS = 'REMOVE_FOLLOWER_SUCCESS';
@@ -146,6 +146,53 @@ const reducer = (state = initialState, action) => {
         ...state,
       };
     }
+
+    /** 팔로잉 **/
+    case FOLLOW_USER_REQUEST: {
+      return {
+        ...state,
+      };
+    }
+
+    case FOLLOW_USER_SUCCESS: {
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Followings: [{ id: action.data }, ...state.me.Followings],
+        },
+      };
+    }
+
+    case FOLLOW_USER_FAILURE: {
+      return {
+        ...state,
+      };
+    }
+
+    /** 언팔로잉 **/
+    case UNFOLLOW_USER_REQUEST: {
+      return {
+        ...state,
+      };
+    }
+
+    case UNFOLLOW_USER_SUCCESS: {
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Followings: state.me.Followings.filter(v => v.id !== action.data),
+        },
+      };
+    }
+
+    case UNFOLLOW_USER_FAILURE: {
+      return {
+        ...state,
+      };
+    }
+
 
     default: {
       return {
