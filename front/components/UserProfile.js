@@ -17,6 +17,10 @@ const UserProfile = () => {
   return (
     <Card
       actions={[
+        <div key="twit">짹짹
+          <br/>
+          {me.Posts.length}
+          </div>,
         <div key="twit">
           팔로잉
           <br />

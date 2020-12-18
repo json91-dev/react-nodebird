@@ -136,8 +136,6 @@ router.post('/login', (req, res, next) => { // /api/user/login
         attributes: ['id', 'nickname', 'userId'], // 특정 필드만 얻어온다. (비밀번호 등 제거)
       });
 
-      console.log(fullUser);
-
       return res.json(fullUser);
     });
   })(req, res, next);

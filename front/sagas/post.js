@@ -35,6 +35,8 @@ import {
   RETWEET_FAILURE,
 } from '../reducers/post';
 
+import { ADD_POST_TO_ME } from "../reducers/user";
+
 function addPostAPI(postData) {
   return axios.post('/post', postData, {
     withCredentials: true, // 로그인한 사람만 쓸수있도록 쿠키를 같이 보내줌
@@ -44,9 +46,13 @@ function addPostAPI(postData) {
 function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data);
-    yield put({
+    yield put({ // post reducer의 데이터 수정
       type: ADD_POST_SUCCESS,
       data: result.data,
+    });
+    yield put({ // user reducer의 데이터 수정
+      type: ADD_POST_TO_ME,
+      data: result.data.id,
     });
   } catch (e) {
     yield put({
