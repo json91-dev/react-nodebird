@@ -28,6 +28,13 @@ import {
   FOLLOW_USER_FAILURE,
   FOLLOW_USER_REQUEST,
 
+  LOAD_FOLLOWERS_SUCCESS,
+  LOAD_FOLLOWERS_FAILURE,
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWINGS_SUCCESS,
+  LOAD_FOLLOWINGS_FAILURE,
+  LOAD_FOLLOWINGS_REQUEST, REMOVE_FOLLOWER_SUCCESS, REMOVE_FOLLOWER_FAILURE, REMOVE_FOLLOWER_REQUEST,
+
 } from '../reducers/user';
 
 /** 로그인 **/
@@ -171,6 +178,84 @@ function* watchFollow() {
   yield takeEvery(FOLLOW_USER_REQUEST, follow);
 }
 
+/** 팔로워 목록 불러오기 (내가 팔로잉하는 사람들)**/
+function loadFollowersAPI(userId) {
+  return axios.get(`/user/${userId}/followers`, {
+    withCredentials: true,
+  });
+}
+
+function* loadFollowers(action) {
+  try {
+    const result = yield call(loadFollowersAPI, action.data); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+    yield put({ // put은 dispatch와 동일하다.
+      type: LOAD_FOLLOWERS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type: LOAD_FOLLOWERS_FAILURE,
+    });
+  }
+}
+
+function* watchLoadFollowers() {
+  yield takeEvery(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+
+/** 팔로잉 목록 불러오기 (나를 팔로우하는 사람들) **/
+function loadFollowingsAPI(userId) {
+  return axios.get(`/user/${userId}/followings`, {
+    withCredentials: true,
+  });
+}
+
+function* loadFollowings(action) {
+  try {
+    const result = yield call(loadFollowingsAPI, action.data); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+    yield put({ // put은 dispatch와 동일하다.
+      type: LOAD_FOLLOWINGS_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type: LOAD_FOLLOWINGS_FAILURE,
+    });
+  }
+}
+
+function* watchLoadFollowings() {
+  yield takeEvery(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
+}
+
+/** 나를 팔로우 하는사람 삭제하기 **/
+function removeFollowerAPI(userId) {
+  return axios.delete(`/user/${userId}/follower`, {
+    withCredentials: true,
+  });
+}
+
+function* removeFollower(action) {
+  try {
+    const result = yield call(removeFollowerAPI, action.data); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+    yield put({ // put은 dispatch와 동일하다.
+      type: REMOVE_FOLLOWER_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type: REMOVE_FOLLOWER_FAILURE,
+    });
+  }
+}
+
+function* watchRemoveFollower() {
+  yield takeEvery(REMOVE_FOLLOWER_REQUEST, removeFollower);
+}
+
 /** 유저 Unfollow **/
 function unfollowAPI(userId) {
   return axios.delete(`/user/${userId}/follow`, {
@@ -204,6 +289,9 @@ export default function* userSaga() {
     fork(watchLoadUser),
     fork(watchSignUp),
     fork(watchFollow),
-    fork(watchUnfollow)
+    fork(watchUnfollow),
+    fork(watchLoadFollowers),
+    fork(watchLoadFollowings),
+    fork(watchRemoveFollower),
   ]);
 }
