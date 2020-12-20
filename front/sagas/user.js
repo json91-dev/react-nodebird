@@ -132,8 +132,8 @@ function* watchLogOut() {
 // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
 function loadUserAPI(userId) {
   return axios.get(userId ? `/user/${userId}` : '/user/', {
-    withCredentials: true, // 서버쪽에서 쿠키를 가져옴.
-  });
+    withCredentials: true, // 클라이언트에서 요청 보낼 때는 브라우저가 쿠키를 같이 동봉해준다.
+  }); // 서버사이드 렌더링일때는 브라우저가 없어서 쿠키를 전달해주지 못한다.
 }
 
 function* loadUser(action) {

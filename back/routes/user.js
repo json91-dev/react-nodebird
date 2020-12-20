@@ -53,7 +53,6 @@ router.post('/', async (req, res, next) => { // POST /api/user => 회원가
       password: hashedPassword,
     });
 
-    console.log(newUser);
     return res.status(200).json(newUser);
   } catch (e) {
     console.error(e);

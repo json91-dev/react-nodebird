@@ -10,6 +10,8 @@ import createSagaMiddleware from 'redux-saga';
 import AppLayout from '../components/AppLayout';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
+import { LOAD_USER_REQUEST } from "../reducers/user";
+import axios from "axios";
 
 // Component는 next에서 넣어주는 props이다.
 // 현재 소스코드에서 index, profile, signup등의 컴포넌트들에 대한 정보를 가지고 있다.
@@ -37,13 +39,26 @@ NodeBird.propTypes = {
 
 // next에서 실행시켜주는 부분이다.
 NodeBird.getInitialProps = async (context) => {
-  console.log(context);
   const { ctx, Component } = context;
   let pageProps = {};
-  if (context.Component.getInitialProps) {
+  const state = ctx.store.getState();
+  const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
+
+  if (ctx.isServer && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+
+  if (!state.user.me) {
+    ctx.store.dispatch({
+      type: LOAD_USER_REQUEST,
+    });
+  }
+
+  if (context.Component.getInitialProps) { // 컴포넌트에 getInitialProps전
     pageProps = await Component.getInitialProps(ctx); // 컴포넌트에서 return한 props가 해당 pageProps로 저장됨.
   }
-  return { pageProps } // 해당 props가 컴포넌트의 props임.
+
+  return { pageProps }; // 해당 props가 컴포넌트의 props임.
 };
 
 // nodeBird 컴포넌트에 props로 store를 넣어주는 역활을 함.
