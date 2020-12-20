@@ -33,7 +33,11 @@ import {
   LOAD_FOLLOWERS_REQUEST,
   LOAD_FOLLOWINGS_SUCCESS,
   LOAD_FOLLOWINGS_FAILURE,
-  LOAD_FOLLOWINGS_REQUEST, REMOVE_FOLLOWER_SUCCESS, REMOVE_FOLLOWER_FAILURE, REMOVE_FOLLOWER_REQUEST,
+  LOAD_FOLLOWINGS_REQUEST,
+  REMOVE_FOLLOWER_SUCCESS,
+  REMOVE_FOLLOWER_FAILURE,
+  REMOVE_FOLLOWER_REQUEST,
+  EDIT_NICKNAME_REQUEST, EDIT_NICKNAME_SUCCESS, EDIT_NICKNAME_FAILURE,
 
 } from '../reducers/user';
 
@@ -282,6 +286,32 @@ function* watchUnfollow() {
   yield takeEvery(UNFOLLOW_USER_REQUEST, unfollow);
 }
 
+/** 닉네임 변경 **/
+function editNicknameAPI(nickname) {
+  return axios.patch('/user/nickname', { nickname }, {
+    withCredentials: true,
+  });
+}
+
+function* editNickname(action) {
+  try {
+    const result = yield call(editNicknameAPI, action.data); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+    yield put({
+      type: EDIT_NICKNAME_SUCCESS,
+      data: result.data,
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type: EDIT_NICKNAME_FAILURE,
+    });
+  }
+}
+
+function* watchEditNickname() {
+  yield takeEvery(EDIT_NICKNAME_REQUEST, editNickname);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogIn),
@@ -293,5 +323,6 @@ export default function* userSaga() {
     fork(watchLoadFollowers),
     fork(watchLoadFollowings),
     fork(watchRemoveFollower),
+    fork(watchEditNickname),
   ]);
 }

@@ -24,16 +24,17 @@
   ],
 
   "rules": {
-    "no-underscore-dangle": "off",
-    "eol-last": "off",
-    "react/forbid-prop-types": "off",
-    "no-trailing-spaces": "off",
-    "react/jsx-filename-extension": "off",
-    "arrow-parens": "off",
-    "jsx-a11y/label-has-associated-control": "off",
-    "jsx-a11y/anchor-is-valid": "off",
+    "no-underscore-dangle": 0,
+    "eol-last": 0,
+    "react/forbid-prop-types": 0,
+    "no-trailing-spaces": 0,
+    "react/jsx-filename-extension": 0,
+    "arrow-parens": 0,
+    "jsx-a11y/label-has-associated-control": 0,
+    "jsx-a11y/anchor-is-valid": 0,
     "max-len": ["error", { "code": 120}],
     "jsx-a11y/alt-text": 0,
-    "react/react-in-jsx-scope": 0
+    "react/react-in-jsx-scope": 0,
+    "quotes": 0,
   }
 }

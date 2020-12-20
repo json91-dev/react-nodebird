@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/dist/next-server/lib/head';
 import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
+import withReduxSaga from 'next-redux-saga';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
@@ -9,8 +10,6 @@ import createSagaMiddleware from 'redux-saga';
 import AppLayout from '../components/AppLayout';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
-
-// import {initialState} from "../reducers/post";
 
 // Component는 next에서 넣어주는 props이다.
 // 현재 소스코드에서 index, profile, signup등의 컴포넌트들에 대한 정보를 가지고 있다.
@@ -71,11 +70,13 @@ const configureStore = (initialState, options) => {
     ? compose(applyMiddleware(...middlewares))
     : compose(applyMiddleware(...middlewares),
       !options.isServer && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ !== 'undefined' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__() : (f) => f);
-  const store = createStore(reducer, initialState, enhancer); // 루트 reducer를 넣어준다.
-  sagaMiddleware.run(rootSaga);
+
+  const store = createStore(reducer, initialState, enhancer);
+  // sagaMiddleware.run(rootSaga); // 기존 코드 제거
+  store.sagaTask = sagaMiddleware.run(rootSaga);
 
   return store;
 };
 
 // NodeBird 컴포넌트의 props로 store를 연결해주는 역활을 한다.
-export default withRedux(configureStore)(NodeBird);
+export default withRedux(configureStore)(withReduxSaga(NodeBird));
