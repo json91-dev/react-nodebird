@@ -149,7 +149,7 @@ function* watchLoadComments() {
 
 /** 해시태그 요청 **/
 function loadHashtagPostsAPI(tag) {
-  return axios.get(`/hashtag/${tag}`); // 쿠키를 안넣어도 된다.
+  return axios.get(`/hashtag/${encodeURIComponent(tag)}`); // 쿠키를 안넣어도 된다.
 }
 
 function* loadHashtagPosts(action) {

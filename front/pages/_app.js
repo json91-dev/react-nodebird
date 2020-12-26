@@ -65,7 +65,10 @@ NodeBird.getInitialProps = async (context) => {
 // state와 reducer가 합쳐져 있는게 store라고 생각하면 편하다.
 const configureStore = (initialState, options) => {
   const sagaMiddleware = createSagaMiddleware();
-  const middlewares = [sagaMiddleware]; // middleware는 redux에 없는 기능들을 추가 할때 주로 사용된다.
+  const middlewares = [sagaMiddleware, (store) => (next) => (action) => { // 커스텀 미들웨어
+    console.log(action);
+    next(action);
+  }]; // middleware는 redux에 없는 기능들을 추가 할때 주로 사용된다.
 
   /**
    * enhancer
