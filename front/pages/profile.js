@@ -11,32 +11,14 @@ import {
   REMOVE_FOLLOWER_REQUEST,
   UNFOLLOW_USER_REQUEST
 } from "../reducers/user";
-import { LOAD_USER_POSTS_REQUEST } from "../reducers/post";
+import { LOAD_MAIN_POSTS_REQUEST, LOAD_USER_POSTS_REQUEST } from "../reducers/post";
 import PostCard from "../components/PostCard";
+import Home from "./index";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const { me, followingList, followerList } = useSelector(state => state.user);
   const { mainPosts } = useSelector(state => state.post);
-
-  useEffect(() => {
-    if (me) {
-      dispatch({
-        type: LOAD_FOLLOWERS_REQUEST,
-        data: me.id,
-      });
-
-      dispatch({
-        type: LOAD_FOLLOWINGS_REQUEST,
-        data: me.id,
-      });
-
-      dispatch({
-        type: LOAD_USER_POSTS_REQUEST,
-        data: me.id,
-      });
-    }
-  }, [me && me.id]);
 
   const onUnfollow = useCallback(userId => () => {
     dispatch({
@@ -96,6 +78,28 @@ const Profile = () => {
       </div>
     </>
   );
-}
+};
+
+Profile.getInitialProps = async (context) => {
+  const state = context.store.getState();
+  // 이 직전에 LOAD_USER_REQUEST
+
+  context.store.dispatch({
+    type: LOAD_FOLLOWERS_REQUEST,
+    data: state.user.me && state.user.me.id,
+  });
+
+  context.store.dispatch({
+    type: LOAD_FOLLOWINGS_REQUEST,
+    data: state.user.me && state.user.me.id,
+  });
+
+  context.store.dispatch({
+    type: LOAD_USER_POSTS_REQUEST,
+    data: state.user.me && state.user.me.id,
+  });
+
+  // 이쯤에서 LOAD_USER_SUCCESS가 되서 me가 생김
+};
 
 export default Profile;

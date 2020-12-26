@@ -173,9 +173,8 @@ function* watchLoadHashtagPosts() {
   yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
 
-/** 해시태그 요청 **/
 function loadUserPostsAPI(id) {
-  return axios.get(`/user/${id}/posts`); // 쿠키를 안넣어도 된다.
+  return axios.get(`/user/${id || 0}/posts`); // 쿠키를 안넣어도 된다.
 }
 
 function* loadUserPosts(action) {

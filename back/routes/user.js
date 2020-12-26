@@ -149,7 +149,9 @@ router.post('/logout', (req, res) => { // /api/user/logout
 router.get('/:id/followings', isLoggedIn, async (req, res, next) => { // /api/user/:id/followings
   try {
     const user = await db.User.findOne({
-      where: { id: parseInt(req.params.id, 10) },
+      where: {
+        id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0,
+      },
     });
     const followers = await user.getFollowings({
       attributes: ['id', 'nickname'],
@@ -164,7 +166,9 @@ router.get('/:id/followings', isLoggedIn, async (req, res, next) => { // /api/us
 router.get('/:id/followers', isLoggedIn, async (req, res, next) => { // /api/user/:id/followers
   try {
     const user = await db.User.findOne({
-      where: { id: parseInt(req.params.id, 10) },
+      where: {
+        id: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0,
+      },
     });
     const followers = await user.getFollowers({
       attributes: ['id', 'nickname'],
@@ -219,7 +223,7 @@ router.get('/:id/posts', async (req, res, next) => {
   try {
     const posts = await db.Post.findAll({
       where: {
-        UserId: parseInt(req.params.id, 10),
+        UserId: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0, // 0이 들어왔을때 자기자신으로 판단한다.
         RetweetId: null, // 리트윗한게 아닌 내가쓴 게시글만 불러오기
       },
       include: [{
