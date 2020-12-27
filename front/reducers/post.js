@@ -257,6 +257,25 @@ const reducer = (state = initialState, action) => {
         ...state,
       };
     }
+    /** 게시글 삭제 **/
+    case REMOVE_POST_REQUEST: {
+      return {
+        ...state,
+      };
+    }
+
+    case REMOVE_POST_SUCCESS: {
+      return {
+        ...state,
+        mainPosts: state.mainPosts.filter(v => v.id !== action.data),
+      };
+    }
+
+    case REMOVE_POST_FAILURE: {
+      return {
+        ...state,
+      };
+    }
 
     default: {
       return {

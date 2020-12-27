@@ -72,6 +72,20 @@ router.post('/images', upload.array('images'), (req, res) => { // 프론트에�
   res.json(req.files.map(v => v.filename)); // v에 이미지 업로드 결과에 대한 데이터들이 담겨있다.
 });
 
+router.delete('/:id', isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await db.Post.findOne({ where: { id: req.params.id } });
+    if (!post) {
+      return res.status(404).send('포스트가 존재하지 않습니다.');
+    }
+    await db.Post.destroy({ where: { id: req.params.id }});
+    res.send(req.params.id);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
 router.get('/:id/comments', async (req, res, next) => {
   try {
     const post = await db.Post.findOne({ where: { id: req.params.id } });
