@@ -183,15 +183,15 @@ function* watchFollow() {
 }
 
 /** 팔로워 목록 불러오기 (내가 팔로잉하는 사람들)**/
-function loadFollowersAPI(userId) {
-  return axios.get(`/user/${userId || 0}/followers`, {
+function loadFollowersAPI(userId, offset = 0, limit = 3) { // undefined일때 기본값 설정 (null일때는 x)
+  return axios.get(`/user/${userId || 0}/followers?offset=${offset}&limit=${limit}`, {
     withCredentials: true,
   });
 }
 
 function* loadFollowers(action) {
   try {
-    const result = yield call(loadFollowersAPI, action.data); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+    const result = yield call(loadFollowersAPI, action.data, action.offset); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
     yield put({ // put은 dispatch와 동일하다.
       type: LOAD_FOLLOWERS_SUCCESS,
       data: result.data,
@@ -209,15 +209,15 @@ function* watchLoadFollowers() {
 }
 
 /** 팔로잉 목록 불러오기 (나를 팔로우하는 사람들) **/
-function loadFollowingsAPI(userId) {
-  return axios.get(`/user/${userId || 0}/followings`, {
+function loadFollowingsAPI(userId, offset = 0, limit = 3) {
+  return axios.get(`/user/${userId || 0}/followings?offset=${offset}&limit=${limit}`, {
     withCredentials: true,
   });
 }
 
 function* loadFollowings(action) {
   try {
-    const result = yield call(loadFollowingsAPI, action.data); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
+    const result = yield call(loadFollowingsAPI, action.data, action.offset); // 쿠키는 알아서 보내주는 것이기 때문에 데이터가 필요 없다.
     yield put({ // put은 dispatch와 동일하다.
       type: LOAD_FOLLOWINGS_SUCCESS,
       data: result.data,
