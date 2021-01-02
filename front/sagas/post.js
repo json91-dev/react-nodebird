@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  all, fork, takeLatest, delay, put, call,
+  all, fork, takeLatest, throttle , put, call,
 } from 'redux-saga/effects';
 import {
   ADD_COMMENT_FAILURE,
@@ -67,13 +67,13 @@ function* watchAddPost() {
 }
 
 /** Main 게시글 요청 **/
-function loadMainPostsAPI() {
-  return axios.get('/posts'); // 쿠키를 안넣어도 된다.
+function loadMainPostsAPI(lastId = 0, limit = 10) { // 게시글이 하나도 안불러져 있을때는 0으로 처리
+  return axios.get(`/posts?lastId=${lastId}&limit=${limit}`);
 }
 
-function* loadMainPosts() {
+function* loadMainPosts(action) {
   try {
-    const result = yield call(loadMainPostsAPI);
+    const result = yield call(loadMainPostsAPI, action.lastId);
     yield put({
       type: LOAD_MAIN_POSTS_SUCCESS,
       data: result.data,
@@ -87,7 +87,7 @@ function* loadMainPosts() {
 }
 
 function* watchLoadMainPosts() {
-  yield takeLatest(LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
+  yield throttle(2000, LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
 }
 
 /** 댓글 쓰기 **/
@@ -148,13 +148,13 @@ function* watchLoadComments() {
 }
 
 /** 해시태그 요청 **/
-function loadHashtagPostsAPI(tag) {
-  return axios.get(`/hashtag/${encodeURIComponent(tag)}`); // 쿠키를 안넣어도 된다.
+function loadHashtagPostsAPI(tag, lastId) {
+  return axios.get(`/hashtag/${encodeURIComponent(tag)}?lastId=${lastId}&limit=10`); // 쿠키를 안넣어도 된다.
 }
 
 function* loadHashtagPosts(action) {
   try {
-    const result = yield call(loadHashtagPostsAPI, action.data);
+    const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
 
     yield put({
       type: LOAD_HASHTAG_POSTS_SUCCESS,
@@ -170,16 +170,16 @@ function* loadHashtagPosts(action) {
 }
 
 function* watchLoadHashtagPosts() {
-  yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
+  yield throttle(2000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
 
-function loadUserPostsAPI(id) {
-  return axios.get(`/user/${id || 0}/posts`); // 쿠키를 안넣어도 된다.
+function loadUserPostsAPI(id, lastId) {
+  return axios.get(`/user/${id || 0}/posts?lastId=${lastId}&limit=10`); // 쿠키를 안넣어도 된다.
 }
 
 function* loadUserPosts(action) {
   try {
-    const result = yield call(loadUserPostsAPI, action.data);
+    const result = yield call(loadUserPostsAPI, action.data, action.lastId);
 
     yield put({
       type: LOAD_USER_POSTS_SUCCESS,
@@ -194,7 +194,7 @@ function* loadUserPosts(action) {
 }
 
 function* watchLoadUserPosts() {
-  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+  yield throttle(2000, LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
 
 /** 이미지 업로드 **/

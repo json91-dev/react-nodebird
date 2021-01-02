@@ -169,7 +169,8 @@ const reducer = (state = initialState, action) => {
     case LOAD_USER_POSTS_REQUEST: {
       return {
         ...state,
-        mainPosts: [],
+        mainPosts: action.lastId === 0 ? [] : state.mainPosts, // 맨 처음 불러올때 기존 mainPosts 초기화, 더보기시는 유지
+        hasMorePost: action.lastId ? state.hasMorePost : true, // 처음 불러올때는 스크롤 기능 활성화, 불러오고있는 도중에는 스크롤 기능 유지
       };
     }
 
@@ -178,7 +179,8 @@ const reducer = (state = initialState, action) => {
     case LOAD_USER_POSTS_SUCCESS: {
       return {
         ...state,
-        mainPosts: action.data,
+        mainPosts: state.mainPosts.concat(action.data),
+        hasMorePost: action.data.length === 10,
       };
     }
 

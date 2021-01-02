@@ -225,11 +225,24 @@ router.delete('/:id/follow', isLoggedIn, async (req, res, next) => {
 
 router.get('/:id/posts', async (req, res, next) => {
   try {
-    const posts = await db.Post.findAll({
-      where: {
+    let where = {};
+    if (parseInt(req.query.lastId, 10)) { // lastId가 있는 경우
+      where = { // id가 해당 아이디보다 작은 아이들을 가져옴
+        id: {
+          [db.Sequelize.Op.lt]: parseInt(req.query.lastId, 10), // sequalize operator 중 lt(less than)
+        },
         UserId: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0, // 0이 들어왔을때 자기자신으로 판단한다.
         RetweetId: null, // 리트윗한게 아닌 내가쓴 게시글만 불러오기
-      },
+      };
+    } else {
+      where = {
+        UserId: parseInt(req.params.id, 10) || (req.user && req.user.id) || 0, // 0이 들어왔을때 자기자신으로 판단한다.
+        RetweetId: null, // 리트윗한게 아닌 내가쓴 게시글만 불러오기
+      };
+    }
+
+    const posts = await db.Post.findAll({
+      where,
       include: [{
         model: db.User, // 게시글 작성자
         attributes: ['id', 'nickname'],
@@ -240,6 +253,8 @@ router.get('/:id/posts', async (req, res, next) => {
         through: 'Like',
         as: 'Likers',
       }],
+      order: [['createdAt', 'DESC']],
+      limit: parseInt(req.query.limit, 10),
     });
     res.json(posts);
   } catch (e) {

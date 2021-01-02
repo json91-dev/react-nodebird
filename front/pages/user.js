@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Card } from 'antd';
@@ -7,9 +7,34 @@ import { LOAD_USER_REQUEST } from '../reducers/user';
 import PostCard from '../components/PostCard';
 
 const User = ({ id }) => {
-  console.log(id);
-  const { mainPosts } = useSelector(state => state.post);
   const { userInfo } = useSelector(state => state.user);
+
+  const dispatch = useDispatch();
+  const { mainPosts, hasMorePost } = useSelector(state => state.post);
+
+  const onScroll = useCallback(() => {
+    const { scrollY } = window;
+    const { clientHeight, scrollHeight } = document.documentElement;
+    console.log(scrollY, clientHeight, scrollHeight);
+
+    if (scrollY + clientHeight > scrollHeight - 300) { // 끝까지 가기 300정도 위쪽부분에서 dispatch
+      if (hasMorePost) {
+        dispatch({
+          type: LOAD_USER_POSTS_REQUEST,
+          data: id,
+          lastId: mainPosts[mainPosts.length - 1].id, // 마지막 게시글의 id
+        });
+      }
+    }
+  }, [hasMorePost, mainPosts.length]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [mainPosts.length]); // 강력한 캐싱을 막기 위함.
 
   return (
     <div>
