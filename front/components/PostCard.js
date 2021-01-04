@@ -109,6 +109,7 @@ const PostCard = ({ post }) => {
       data: userId,
     });
   });
+  console.log(post);
 
   return (
     <div>

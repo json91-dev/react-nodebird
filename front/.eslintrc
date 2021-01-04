@@ -37,5 +37,6 @@
     "react/react-in-jsx-scope": 0,
     "quotes": 0,
     "prefer-destructuring": 0,
+    "no-param-reassign": 0,
   }
 }
