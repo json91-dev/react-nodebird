@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
@@ -9,6 +9,7 @@ const Home = () => {
   const { me } = useSelector((state) => state.user);
   const { mainPosts, hasMorePost } = useSelector((state) => state.post);
   const dispatch = useDispatch();
+  const countRef = useRef([]);
 
   const onScroll = useCallback(() => {
     const { scrollY } = window;
@@ -18,10 +19,14 @@ const Home = () => {
 
     if (scrollY + clientHeight > scrollHeight - 300) { // 끝까지 가기 300정도 위쪽부분에서 dispatch
       if (hasMorePost) {
-        dispatch({
-          type: LOAD_MAIN_POSTS_REQUEST,
-          lastId: mainPosts[mainPosts.length - 1].id, // 마지막 게시글의 id
-        });
+        const lastId = mainPosts[mainPosts.length - 1].id;
+        if (!countRef.current.includes(lastId)) {
+          dispatch({
+            type: LOAD_MAIN_POSTS_REQUEST,
+            lastId, // 마지막 게시글의 id
+          });
+          countRef.current.push(lastId);
+        }
       }
     }
   }, [hasMorePost, mainPosts.length]);
