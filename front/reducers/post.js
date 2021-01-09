@@ -57,7 +57,9 @@ export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
-export const ADD_DUMMY = 'ADD_DUMMY';
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -101,11 +103,6 @@ const reducer = (state = initialState, action) => {
       case ADD_POST_FAILURE: {
         draft.isAddingPost = false;
         draft.addPostErrorReason = action.error;
-        break;
-      }
-
-      case ADD_DUMMY: {
-        draft.mainPosts.unshift(action.data);
         break;
       }
 
@@ -213,6 +210,20 @@ const reducer = (state = initialState, action) => {
       }
 
       case REMOVE_POST_FAILURE: {
+        break;
+      }
+
+      /** 개별 포스트 불러오기 **/
+      case LOAD_POST_REQUEST: {
+        break;
+      }
+
+      case LOAD_POST_SUCCESS: {
+        draft.singlePost = action.data;
+        break;
+      }
+
+      case LOAD_POST_FAILURE: {
         break;
       }
 
