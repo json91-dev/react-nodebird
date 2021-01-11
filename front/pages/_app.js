@@ -1,32 +1,58 @@
 import React from 'react';
-import Head from 'next/dist/next-server/lib/head';
 import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
 import withReduxSaga from 'next-redux-saga';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
+import Helmet from 'react-helmet';
 
 import AppLayout from '../components/AppLayout';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
 import { LOAD_USER_REQUEST } from "../reducers/user";
 import axios from "axios";
+import { Container } from 'next/app'; // 내부 페이지를 렌더링 할수 있도록 선언
 
 // Component는 next에서 넣어주는 props이다.
 // 현재 소스코드에서 index, profile, signup등의 컴포넌트들에 대한 정보를 가지고 있다.
 // pageProps는 각각의 컴포넌트에 대해 props를 내려주는데 ...pageProps로 넘겨주어야 한다.
 const NodeBird = ({ Component, store, pageProps }) => (
-  <Provider store={store}>
-    <Head>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.6.3/antd.min.css" />
-      <link rel="stylesheet" type="text/css" charSet="UTF-8" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
-    </Head>
-    <AppLayout>
-      <Component {...pageProps} />
-    </AppLayout>
-  </Provider>
+  <Container>
+    <Provider store={store}>
+      <Helmet
+        title="NodeBird"
+        htmlAttributes={{ lang: 'ko' }} // 한국어 페이지라는것을 알려줌
+        // 여기에 넣는 헬멧은 모든 페이지에 공통된 HEAD태그
+        meta={[{
+          charset: 'UTF-8',
+        }, {
+          name: 'viewport',
+          content: 'width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yew,viewport-fit=cover',
+        }, {
+          'http-equiv': 'X-UA-Compatible', content: 'IE-edge',
+        }, {
+          property: 'og:title', content: 'NodeBird', // Open Grape
+        }, {
+          property: 'description', content: '제로초의 NodeBird SNS', // Open Grape
+        }, {
+          property: 'og:description', content: '제로초의 NodeBird SNS', // Open Grape
+        }, {
+          property: 'og:type', content: 'website', // Open Grape
+        }]}
+        link={[{ // {}, // favicon 넣어 줄 예정
+          rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/antd/4.6.3/antd.min.css',
+        }, {
+          rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css',
+        }, {
+          rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css',
+        }]}
+      />
+      <AppLayout>
+        <Component {...pageProps} />
+      </AppLayout>
+    </Provider>
+  </Container>
 );
 
 NodeBird.propTypes = {

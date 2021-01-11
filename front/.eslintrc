@@ -32,7 +32,7 @@
     "arrow-parens": 0,
     "jsx-a11y/label-has-associated-control": 0,
     "jsx-a11y/anchor-is-valid": 0,
-    "max-len": ["error", { "code": 120}],
+    "max-len": ["error", { "code": 140}],
     "jsx-a11y/alt-text": 0,
     "react/react-in-jsx-scope": 0,
     "quotes": 0,

@@ -49,4 +49,3 @@ app.prepare().then(() => {
     console.log('next+express running on port 3060');
   });
 });
-
