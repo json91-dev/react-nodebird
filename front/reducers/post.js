@@ -136,7 +136,7 @@ const reducer = (state = initialState, action) => {
       case LOAD_MAIN_POSTS_REQUEST:
       case LOAD_HASHTAG_POSTS_REQUEST:
       case LOAD_USER_POSTS_REQUEST: {
-        draft.mainPosts = action.lastId === 0 ? [] : draft.mainPosts; // 맨 처음 불러올때 기존 mainPosts 초기화, 더보기시는 유지
+        draft.mainPosts = !action.lastId ? [] : draft.mainPosts; // 맨 처음 불러올때 기존 mainPosts 초기화, 더보기시는 유지
         draft.hasMorePost = action.lastId ? draft.hasMorePost : true; // 처음 불러올때는 스크롤 기능 활성화, 불러오고있는 도중에는 스크롤 기능 유지
         break;
       }
