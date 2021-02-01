@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, useEffect, memo,
+  useCallback, useState, useEffect, memo, useRef,
 } from 'react';
 import {
   Avatar, Button, Icon, Card, List, Comment, Popover,
@@ -19,11 +19,11 @@ import {
 } from '../reducers/post';
 import PostImages from "../components/PostImages";
 import PostCardContent from "../components/PostCardContent";
+import FollowButton from '../components/FollowButton';
 import {
   FOLLOW_USER_REQUEST,
   UNFOLLOW_USER_REQUEST,
 } from "../reducers/user";
-
 moment.locale('ko');
 
 const CardWrapper = styled.div`
@@ -32,10 +32,10 @@ const CardWrapper = styled.div`
 
 const PostCard = memo(({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
-  const { me } = useSelector(state => state.user);
+  const id = useSelector(state => state.user.me && state.user.me.id);
   const dispatch = useDispatch();
 
-  const liked = me && post.Likers && post.Likers.find(v => v.id === me.id);
+  const liked = id && post.Likers && post.Likers.find(v => v.id === id);
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);
@@ -47,10 +47,17 @@ const PostCard = memo(({ post }) => {
     }
   }, []);
 
+  // console.log('post', post);
+
+  const postMemory = useRef(id);
+  useEffect(() => {
+    console.log('post useEffect', postMemory.current, id, postMemory.current === id);
+  }, [id]);
+
   const onToggleLike = useCallback((e) => {
     e.preventDefault();
 
-    if (!me) {
+    if (!id) {
       return alert('로그인이 필요합니다.');
     }
 
@@ -65,17 +72,17 @@ const PostCard = memo(({ post }) => {
         data: post.id,
       });
     }
-  }, [me && me.id, post && post.id, liked]);
+  }, [id, post && post.id, liked]);
 
   const onRetweet = useCallback(() => {
-    if (!me) {
+    if (!id) {
       return alert('로그인이 필요합니다.');
     }
     return dispatch({
       type: RETWEET_REQUEST,
       data: post.id,
     });
-  }, [me && me.id, post.id]);
+  }, [id, post.id]);
 
   const onFollow = useCallback(userId => () => {
     dispatch({
@@ -97,7 +104,6 @@ const PostCard = memo(({ post }) => {
       data: userId,
     });
   });
-  console.log(post);
 
   return (
     <CardWrapper>
@@ -118,7 +124,7 @@ const PostCard = memo(({ post }) => {
             key="ellipsis"
             content={(
               <Button.Group>
-                {me && post.UserId === me.id
+                {id && post.UserId === id
                   ? (
                     <>
                       <Button>수정</Button>
@@ -133,11 +139,7 @@ const PostCard = memo(({ post }) => {
           </Popover>,
         ]}
         title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
-        extra={!me || post.User.id === me.id // 로그인을 안했거나 자기의 게시글이 아닐때는 팔로우, 언팔로우가 뜨지 않는다.
-          ? null
-          : me.Followings && me.Followings.find(v => v.id === post.User.id) // 작성자가 내 팔로잉 목록에 들어있을 경우 (팔로우중)
-            ? <Button onClick={onUnfollow(post.User.id)}>언팔로우</Button>
-            : <Button onClick={onFollow(post.User.id)}>팔로우</Button>}
+        extra={<FollowButton post={post} onUnfollow={onUnfollow} onFollow={onFollow} />}
       >
         {post.RetweetId && post.Retweet // 리트윗을 한 경우에는 카드안에 카드를 넣어
           ? (
