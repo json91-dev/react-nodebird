@@ -6,14 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
-    "build": "BUNDLE_ANALYZE=both next build",
+    "build": "ANALYZE=true next build",
     "prestart": "npm run build",
     "start": "NODE_ENV=production next start"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@zeit/next-bundle-analyzer": "^0.1.2",
+    "@next/bundle-analyzer": "^8.1.0",
     "antd": "^3.16.6",
     "axios": "^0.18.0",
     "compression-webpack-plugin": "^2.0.0",

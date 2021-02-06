@@ -39,6 +39,8 @@ const NodeBird = ({ Component, store, pageProps }) => (
           property: 'og:description', content: '제로초의 NodeBird SNS', // Open Grape
         }, {
           property: 'og:type', content: 'website', // Open Grape
+        }, {
+          property: 'og:image', content: 'http://localhost:3060/favicon.ico',
         }]}
         link={[{ // {}, // favicon 넣어 줄 예정
           rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/antd/4.6.3/antd.min.css',

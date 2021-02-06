@@ -5,4 +5,5 @@ package-lock.json
 xlsx/~$data.xlsx
 .next
 back/uploads
+front/bundles/*
 
