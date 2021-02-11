@@ -7,4 +7,4 @@ xlsx/~$data.xlsx
 back/uploads
 front/bundles/*
 react-nodebird.pem
-
+.env
