@@ -47,8 +47,7 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  server.listen(prod ? process.env.PORT: 3060, () => {
-    console.log(`next+express running on port ${process.env.PORT}`);
+  server.listen(prod ? process.env.PORT : 3060, () => {
+    console.log(`next+express running on port ${prod ? process.env.PORT : 3060}`);
   });
-
 });

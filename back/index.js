@@ -51,6 +51,6 @@ app.use('/api/posts', postsAPIRouter);
 app.use('/api/hashtag', hashtagAPIRouter);
 
 // 로컬 호스트의 서버 실행
-app.listen(3065, () => {
-  console.log('server is running on localhost: 3065');
+app.listen(process.env.NODE_ENV === 'production' ? process.env.PORT : 3065, () => {
+  console.log(`server is running on localhost: ${process.env.NODE_ENV === 'production' ? process.env.PORT : 3065}`);
 });
