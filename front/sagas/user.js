@@ -47,7 +47,7 @@ function logInAPI(logInData) {
   // 서버에 요청을 보내는 부분
   // data.userId, data.password를 passport 로그인으로 넘겨준다.
   // withCredential을 true로 설정해주면 쿠키를 주고받을 수 있다.
-  return axios.post('http://localhost:3065/api/user/login', logInData, {
+  return axios.post('/user/login', logInData, {
     withCredentials: true,
   });
 }
@@ -75,7 +75,7 @@ function* watchLogIn() {
 /** 회원가입 **/
 
 function signUpAPI(signUpData) {
-  return axios.post('http://localhost:3065/api/user/', signUpData);
+  return axios.post('/user/', signUpData);
 }
 
 function* signUp(action) {
