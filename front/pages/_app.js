@@ -12,7 +12,8 @@ import reducer from '../reducers';
 import rootSaga from '../sagas';
 import { LOAD_USER_REQUEST } from "../reducers/user";
 import axios from "axios";
-import { Container } from 'next/app'; // 내부 페이지를 렌더링 할수 있도록 선언
+import { Container } from 'next/app';
+import { frontUrl } from "../config/config"; // 내부 페이지를 렌더링 할수 있도록 선언
 
 // Component는 next에서 넣어주는 props이다.
 // 현재 소스코드에서 index, profile, signup등의 컴포넌트들에 대한 정보를 가지고 있다.
@@ -40,7 +41,7 @@ const NodeBird = ({ Component, store, pageProps }) => (
         }, {
           property: 'og:type', content: 'website', // Open Grape
         }, {
-          property: 'og:image', content: 'http://localhost:3060/favicon.ico',
+          property: 'og:image', content: `${frontUrl}/favicon.ico`,
         }]}
         link={[{ // {}, // favicon 넣어 줄 예정
           rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/antd/4.6.3/antd.min.css',
