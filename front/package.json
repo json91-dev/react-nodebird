@@ -8,7 +8,7 @@
     "dev": "nodemon",
     "build": "ANALYZE=true next build",
     "prestart": "npm run build",
-    "start": "NODE_ENV=production PORT=80 pm2 start server.js"
+    "start": "cross-env NODE_ENV=production PORT=80 pm2 start server.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +18,7 @@
     "axios": "^0.18.0",
     "compression-webpack-plugin": "^2.0.0",
     "cookie-parser": "^1.4.4",
+    "cross-env": "^7.0.3",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
     "express-session": "^1.16.1",
