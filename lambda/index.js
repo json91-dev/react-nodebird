@@ -19,7 +19,7 @@ exports.handler = async (event, context, callback) => {
       Key,
     }).promise();
 
-    console.log('original', s3Object.Body.length); // Body에 실제 데이터가 들어있고, length로는 사이즈를 알 수 있음.
+    console.log('original', s3Object.Body.length);
 
     const resizedImage = await Sharp(s3Object.Body)
       .resize(800, 800, {
@@ -28,11 +28,15 @@ exports.handler = async (event, context, callback) => {
       .toFormat(requiredFormat)
       .toBuffer(); // 001011 과 같은 버퍼 데이터로 변환.
 
+    console.log('resize', resizedImage.length);
+
     await S3.putObject({
-      Bucket,
-      key: `thumb/${filename}`,
       Body: resizedImage,
+      Bucket,
+      Key: `thumb/${filename}`,
     }).promise();
+
+    console.log('put');
 
     return callback(null, `thumb/${filename}`);
   } catch (e) {
