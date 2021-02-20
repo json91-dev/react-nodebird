@@ -9,7 +9,7 @@ exports.handler = async (event, context, callback) => {
   const Key = event.Records[0].s3.object.key; // 경로 + 파일명 (original/파일명.png)
   const filename = Key.split('/')[Key.split('/').length -1];
   const ext = Key.split('.')[Key.split('.').length -1];
-  console.log(Bucket, key, filename, ext);
+  console.log(Bucket, Key, filename, ext);
 
   const requiredFormat = ext === 'jpg' ? 'jpeg' : ext; // jpg일경우 jpeg로 치환
 
@@ -23,12 +23,12 @@ exports.handler = async (event, context, callback) => {
 
     const resizedImage = await Sharp(s3Object.Body)
       .resize(800, 800, {
-        fit: 'inside' // 원본 비율 유지를 위한 설정 (inside로 하면 비율도 맞게 800,800에 맞게 압축이 된다.)
+        fit: 'inside', // 원본 비율 유지를 위한 설정 (inside로 하면 비율도 맞게 800,800에 맞게 압축이 된다.)
       })
       .toFormat(requiredFormat)
       .toBuffer(); // 001011 과 같은 버퍼 데이터로 변환.
 
-    await s3.putObject({
+    await S3.putObject({
       Bucket,
       key: `thumb/${filename}`,
       Body: resizedImage,
