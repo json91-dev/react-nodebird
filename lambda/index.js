@@ -1,14 +1,14 @@
 const AWS = require('aws-sdk');
 const Sharp = require('sharp');
 
-const S3 = new AWS.S3({ region: 'ap-northest-2' }); // 서울 region
+const S3 = new AWS.S3({ region: 'ap-northeast-2' }); // 서울 region
 
 // s3가 올라왔을때 헨들러 함수가 동작함.
 exports.handler = async (event, context, callback) => {
   const Bucket = event.Records[0].s3.bucket.name; // 버킷이름
   const Key = event.Records[0].s3.object.key; // 경로 + 파일명 (original/파일명.png)
-  const filename = Key.split('/')[Key.split('/').length -1];
-  const ext = Key.split('.')[Key.split('.').length -1];
+  const filename = Key.split('/')[Key.split('/').length - 1];
+  const ext = Key.split('.')[Key.split('.').length - 1];
   console.log(Bucket, Key, filename, ext);
 
   const requiredFormat = ext === 'jpg' ? 'jpeg' : ext; // jpg일경우 jpeg로 치환
