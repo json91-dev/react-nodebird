@@ -177,14 +177,14 @@ router.get('/:id/followers', isLoggedIn, async (req, res, next) => { // /api/use
       limit: parseInt(req.query.limit, 10),
       offset: parseInt(req.query.offset, 10),
     });
-    res.json(followers);
+    return res.json(followers);
   } catch (e) {
     console.error(e);
     next(e);
   }
 });
 
-router.delete('/:id/follower', isLoggedIn, async (req, res) => { // /api/user/:id/followers
+router.delete('/:id/follower', isLoggedIn, async (req, res, next) => { // /api/user/:id/followers
   try {
     const me = await db.User.findOne({
       where: { id: req.user.id },
