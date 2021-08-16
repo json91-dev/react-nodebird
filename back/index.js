@@ -70,6 +70,12 @@ app.use('/api/post', postAPIRouter);
 app.use('/api/posts', postsAPIRouter);
 app.use('/api/hashtag', hashtagAPIRouter);
 
+// error handler middleware
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.send(err.message || 'Error!!');
+});
+
 // 로컬 호스트의 서버 실행
 app.listen(prod ? process.env.PORT : 3065, () => {
   console.log(`server is running on localhost: ${process.env.NODE_ENV === 'production' ? process.env.PORT : 3065}`);
